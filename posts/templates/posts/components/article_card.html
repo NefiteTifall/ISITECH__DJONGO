@@ -1,0 +1,114 @@
+{% load blog_extras %}
+{% load dict_extras %}
+
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col article-card" data-article-id="{{ article.id }}">
+    {% if article.image %}
+        <img src="{{ article.image.url }}" alt="{{ article.titre }}" class="w-full h-48 object-cover">
+    {% else %}
+        <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <span class="text-white text-4xl font-bold">{{ article.titre|first }}</span>
+        </div>
+    {% endif %}
+    
+    <div class="p-6 flex-1 flex flex-col">
+        <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
+                {{ article.auteur.username|first|upper }}
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ article.auteur.username }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ article.date_creation|date:"d M Y" }}</p>
+            </div>
+            {% if show_status and article.status == 'draft' %}
+                <span class="ml-auto px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Brouillon</span>
+            {% endif %}
+        </div>
+        
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <a href="{% url 'posts:article_detail' article.slug %}" class="hover:text-indigo-600 transition-colors">
+                {{ article.titre|truncatechars:60 }}
+            </a>
+        </h3>
+        
+        <p class="text-gray-600 dark:text-gray-300 mb-4 flex-1">
+            {% if article.get_resume_for_display %}
+                {{ article.get_resume_for_display|markdown_to_html|striptags|truncatechars:150 }}
+            {% else %}
+                {{ article.get_content_for_display|markdown_to_html|striptags|truncatechars:150 }}
+            {% endif %}
+        </p>
+        
+        {% if show_reactions %}
+        <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-2">
+                <button 
+                    class="reaction-btn flex items-center space-x-1 px-3 py-1 rounded-full transition-all {% if article.id|to_str in user_reactions and user_reactions|get_item:article.id|to_str == 'like' %}bg-blue-100 text-blue-600{% else %}bg-gray-100 text-gray-600 hover:bg-blue-50{% endif %}"
+                    data-reaction-type="like"
+                    data-article-id="{{ article.id }}"
+                >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                    </svg>
+                    <span class="text-sm reaction-count" data-reaction-type="like">{{ article.reactions.like|default:0 }}</span>
+                </button>
+                
+                <button 
+                    class="reaction-btn flex items-center space-x-1 px-3 py-1 rounded-full transition-all {% if article.id|to_str in user_reactions and user_reactions|get_item:article.id|to_str == 'love' %}bg-red-100 text-red-600{% else %}bg-gray-100 text-gray-600 hover:bg-red-50{% endif %}"
+                    data-reaction-type="love"
+                    data-article-id="{{ article.id }}"
+                >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm reaction-count" data-reaction-type="love">{{ article.reactions.love|default:0 }}</span>
+                </button>
+                
+                <button 
+                    class="reaction-btn flex items-center space-x-1 px-3 py-1 rounded-full transition-all {% if article.id|to_str in user_reactions and user_reactions|get_item:article.id|to_str == 'insightful' %}bg-purple-100 text-purple-600{% else %}bg-gray-100 text-gray-600 hover:bg-purple-50{% endif %}"
+                    data-reaction-type="insightful"
+                    data-article-id="{{ article.id }}"
+                >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm reaction-count" data-reaction-type="insightful">{{ article.reactions.insightful|default:0 }}</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                {% if show_stats %}
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                    </svg>
+                    {{ article.vues }}
+                </span>
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
+                    </svg>
+                    {{ article.commentaires.count|default:0 }}
+                </span>
+                <span>{{ article.contenu|wordcount }} mots</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if show_actions %}
+        <div class="flex items-center justify-end pt-4 border-t border-gray-200 dark:border-gray-700 space-x-2">
+            <a href="{% url 'posts:edit_article' article.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                Modifier
+            </a>
+            <form method="post" action="{% url 'posts:delete_article' article.id %}" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                {% csrf_token %}
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
+                    Supprimer
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>

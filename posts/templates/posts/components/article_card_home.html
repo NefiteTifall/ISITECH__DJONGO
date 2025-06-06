@@ -1,0 +1,221 @@
+{% load blog_extras %}
+{% load dict_extras %}
+
+<article class="group relative bg-white/95 backdrop-blur-sm rounded-2xl overflow-visible shadow-lg hover:shadow-2xl hover-lift transition-all duration-500 border border-white/20 fade-in-up stagger-animation">
+    <!-- Image de couverture (gradient si pas d'image) -->
+    <div class="h-48 relative overflow-hidden rounded-t-2xl">
+        {% if article.image %}
+            <img src="{{ article.image.url }}" alt="{{ article.titre }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/30"></div>
+        {% else %}
+            <div class="h-full bg-gradient-to-br from-red-400 via-[#da3e44] to-orange-500 animate-gradient">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <!-- Particules flottantes -->
+                <div class="absolute top-4 left-4 w-2 h-2 bg-white/40 rounded-full floating-animation"></div>
+                <div class="absolute top-8 right-8 w-1 h-1 bg-white/60 rounded-full floating-animation" style="animation-delay: 1s;"></div>
+                <div class="absolute bottom-6 left-1/3 w-1.5 h-1.5 bg-white/30 rounded-full floating-animation" style="animation-delay: 2s;"></div>
+            </div>
+        {% endif %}
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/90 text-gray-800 backdrop-blur-sm">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                {{ article.date_creation|date:"j F Y" }}
+            </span>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <!-- Titre -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-500 ease-in-out">
+            <a href="{% url 'posts:article_detail' article.slug %}" class="hover:text-purple-600 transition-colors">
+                {{ article.titre }}
+            </a>
+        </h3>
+        
+        <!-- Auteur avec avatar -->
+        <div class="flex items-center mb-4">
+            <div class="relative">
+                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300 animate-gradient">
+                    {{ article.get_author_display_name|slice:":1"|upper }}
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-semibold text-gray-900">{{ article.get_author_display_name }}</p>
+                <p class="text-xs text-gray-500">Auteur vérifié</p>
+            </div>
+        </div>
+        
+        <!-- Contenu -->
+        <p class="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+            {% if article.get_resume_for_display %}
+                {{ article.get_resume_for_display|markdown_to_html|striptags|truncatewords:20 }}
+            {% else %}
+                {{ article.get_content_for_display|markdown_to_html|striptags|truncatewords:20 }}
+            {% endif %}
+        </p>
+        
+        <!-- Réactions et interactions -->
+        <div class="mb-4 space-y-3">
+            <!-- Statistiques de réactions existantes -->
+            {% if article.reaction_stats %}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1">
+                        {% for reaction_type, reaction_data in article.reaction_stats.items %}
+                            <div class="flex items-center bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border border-blue-100 rounded-lg px-3 py-1 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-md" 
+                                 onclick="window.location.href='{% url 'posts:article_detail' article.slug %}#reactions'"
+                                 title="Voir toutes les réactions">
+                                <span class="text-base mr-1">{{ reaction_data.emoji }}</span>
+                                <span class="text-sm font-semibold text-blue-600 group-hover:text-blue-700">{{ reaction_data.count }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if article.total_reactions %}
+                        <span class="text-xs text-gray-500 font-medium">{{ article.total_reactions }} réaction{{ article.total_reactions|pluralize }}</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <!-- Barre de réactions interactive -->
+            <div class="flex items-center justify-between bg-gray-50 rounded-xl p-3 border border-gray-100 relative overflow-visible">
+                <div class="flex items-center space-x-2">
+                    <button onclick="quickReaction({{ article.id }}, 'like', this, event)" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                            class="quick-reaction-btn flex items-center justify-center w-8 h-8 hover:bg-blue-100 hover:scale-110 rounded-full transition-all duration-200 group border {% if 'like' in article.user_reaction_types %}border-blue-300 bg-blue-100{% else %}border-transparent{% endif %} hover:border-blue-200" 
+                            title="J'aime">
+                        <span class="text-lg transform group-hover:rotate-12 transition-transform">👍</span>
+                    </button>
+                    <button onclick="quickReaction({{ article.id }}, 'love', this, event)" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                            class="quick-reaction-btn flex items-center justify-center w-8 h-8 hover:bg-red-100 hover:scale-110 rounded-full transition-all duration-200 group border {% if 'love' in article.user_reaction_types %}border-red-300 bg-red-100{% else %}border-transparent{% endif %} hover:border-red-200" 
+                            title="Adore">
+                        <span class="text-lg transform group-hover:scale-125 transition-transform">❤️</span>
+                    </button>
+                    <button onclick="quickReaction({{ article.id }}, 'laugh', this, event)" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                            class="quick-reaction-btn flex items-center justify-center w-8 h-8 hover:bg-yellow-100 hover:scale-110 rounded-full transition-all duration-200 group border {% if 'laugh' in article.user_reaction_types %}border-yellow-300 bg-yellow-100{% else %}border-transparent{% endif %} hover:border-yellow-200" 
+                            title="Drôle">
+                        <span class="text-lg transform group-hover:rotate-12 transition-transform">😂</span>
+                    </button>
+                    <button onclick="quickReaction({{ article.id }}, 'wow', this, event)" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                            class="quick-reaction-btn flex items-center justify-center w-8 h-8 hover:bg-green-100 hover:scale-110 rounded-full transition-all duration-200 group border {% if 'wow' in article.user_reaction_types %}border-green-300 bg-green-100{% else %}border-transparent{% endif %} hover:border-green-200" 
+                            title="Impressionnant">
+                        <span class="text-lg transform group-hover:scale-125 transition-transform">😮</span>
+                    </button>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <!-- Compteur de commentaires -->
+                    {% if article.commentaires.count > 0 %}
+                        <a href="{% url 'posts:article_detail' article.slug %}#commentaires" 
+                           class="flex items-center space-x-1 text-gray-500 hover:text-blue-600 transition-colors group">
+                            <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-sm font-medium">{{ article.commentaires.count }}</span>
+                        </a>
+                    {% endif %}
+                    
+                    <!-- Menu déroulant pour plus de réactions -->
+                    <div class="relative">
+                        <button onclick="toggleReactionMenu({{ article.id }})" 
+                                class="px-3 py-1.5 text-xs font-semibold text-gray-500 bg-gray-50 hover:bg-blue-500 hover:text-white rounded-full border border-gray-200 hover:border-blue-500 shadow-sm flex items-center space-x-1.5"
+                                id="reactions-menu-btn-{{ article.id }}"
+                                style="visibility: visible; display: flex;">
+                            <span>Plus</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Menu déroulant -->
+                        <div id="reactions-menu-{{ article.id }}" 
+                             class="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200/50 opacity-0 scale-95 transform origin-top-right transition-all duration-200 pointer-events-none"
+                             style="z-index: 99999;">
+                            <div class="p-3">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Toutes les réactions</h4>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="quickReaction({{ article.id }}, 'like', this, event); closeReactionMenu({{ article.id }})" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                                            class="reaction-menu-btn flex flex-col items-center p-2 hover:bg-blue-50 rounded-lg transition-colors group {% if 'like' in article.user_reaction_types %}bg-blue-100 border border-blue-300{% endif %}"
+                                            title="Cliquez pour activer/désactiver cette réaction">
+                                        <span class="text-xl mb-1 group-hover:scale-110 transition-transform">👍</span>
+                                        <span class="text-xs text-gray-600 font-medium">J'aime</span>
+                                    </button>
+                                    <button onclick="quickReaction({{ article.id }}, 'love', this, event); closeReactionMenu({{ article.id }})" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                                            class="reaction-menu-btn flex flex-col items-center p-2 hover:bg-red-50 rounded-lg transition-colors group {% if 'love' in article.user_reaction_types %}bg-red-100 border border-red-300{% endif %}"
+                                            title="Cliquez pour activer/désactiver cette réaction">
+                                        <span class="text-xl mb-1 group-hover:scale-110 transition-transform">❤️</span>
+                                        <span class="text-xs text-gray-600 font-medium">Adore</span>
+                                    </button>
+                                    <button onclick="quickReaction({{ article.id }}, 'laugh', this, event); closeReactionMenu({{ article.id }})" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                                            class="reaction-menu-btn flex flex-col items-center p-2 hover:bg-yellow-50 rounded-lg transition-colors group {% if 'laugh' in article.user_reaction_types %}bg-yellow-100 border border-yellow-300{% endif %}"
+                                            title="Cliquez pour activer/désactiver cette réaction">
+                                        <span class="text-xl mb-1 group-hover:scale-110 transition-transform">😂</span>
+                                        <span class="text-xs text-gray-600 font-medium">Drôle</span>
+                                    </button>
+                                    <button onclick="quickReaction({{ article.id }}, 'wow', this, event); closeReactionMenu({{ article.id }})" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                                            class="reaction-menu-btn flex flex-col items-center p-2 hover:bg-green-50 rounded-lg transition-colors group {% if 'wow' in article.user_reaction_types %}bg-green-100 border border-green-300{% endif %}"
+                                            title="Cliquez pour activer/désactiver cette réaction">
+                                        <span class="text-xl mb-1 group-hover:scale-110 transition-transform">😮</span>
+                                        <span class="text-xs text-gray-600 font-medium">Wow</span>
+                                    </button>
+                                    <button onclick="quickReaction({{ article.id }}, 'sad', this, event); closeReactionMenu({{ article.id }})" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                                            class="reaction-menu-btn flex flex-col items-center p-2 hover:bg-blue-50 rounded-lg transition-colors group {% if 'sad' in article.user_reaction_types %}bg-blue-100 border border-blue-300{% endif %}"
+                                            title="Cliquez pour activer/désactiver cette réaction">
+                                        <span class="text-xl mb-1 group-hover:scale-110 transition-transform">😢</span>
+                                        <span class="text-xs text-gray-600 font-medium">Triste</span>
+                                    </button>
+                                    <button onclick="quickReaction({{ article.id }}, 'angry', this, event); closeReactionMenu({{ article.id }})" data-reaction-url="{% url 'posts:add_reaction' article.id %}" 
+                                            class="reaction-menu-btn flex flex-col items-center p-2 hover:bg-orange-50 rounded-lg transition-colors group {% if 'angry' in article.user_reaction_types %}bg-orange-100 border border-orange-300{% endif %}"
+                                            title="Cliquez pour activer/désactiver cette réaction">
+                                        <span class="text-xl mb-1 group-hover:scale-110 transition-transform">😠</span>
+                                        <span class="text-xs text-gray-600 font-medium">Colère</span>
+                                    </button>
+                                </div>
+                                <div class="mt-3 p-2 bg-green-50 rounded-lg">
+                                    <p class="text-xs text-green-700 text-center">
+                                        🎉 <strong>Nouveau :</strong> Vous pouvez maintenant ajouter plusieurs réactions ! Cliquez à nouveau pour supprimer.
+                                    </p>
+                                </div>
+                                <div class="border-t border-gray-100 mt-3 pt-3">
+                                    <a href="{% url 'posts:article_detail' article.slug %}#reactions" 
+                                       class="flex items-center justify-center w-full py-2 text-xs text-gray-500 hover:text-blue-600 transition-colors font-medium">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Voir l'article complet
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer avec stats -->
+        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                    </svg>
+                    {{ article.contenu|wordcount }} mots
+                </span>
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                    </svg>
+                    5 min
+                </span>
+            </div>
+            <a href="{% url 'posts:article_detail' article.slug %}" class="text-purple-600 hover:text-purple-800 font-medium text-sm flex items-center group/btn">
+                Lire
+                <svg class="w-4 h-4 ml-1 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</article>

@@ -1,0 +1,1829 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-03 14:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Español <contact@blogflow.com>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/forms.py:11
+msgid "votre@email.com"
+msgstr "tu@email.com"
+
+#: accounts/forms.py:15 accounts/forms.py:38
+msgid "Nom d'affichage (optionnel)"
+msgstr "Nombre para mostrar (opcional)"
+
+#: accounts/forms.py:26
+msgid "Choisissez un nom d'utilisateur"
+msgstr "Elige un nombre de usuario"
+
+#: accounts/forms.py:30
+msgid "Créez un mot de passe sécurisé"
+msgstr "Crea una contraseña segura"
+
+#: accounts/forms.py:34
+msgid "Confirmez votre mot de passe"
+msgstr "Confirma tu contraseña"
+
+#: accounts/forms.py:46
+msgid "Nom d'utilisateur"
+msgstr "Nombre de usuario"
+
+#: accounts/forms.py:51
+msgid "Mot de passe"
+msgstr "Contraseña"
+
+#: accounts/models.py:9
+msgid "Lecteur"
+msgstr "Lector"
+
+#: accounts/models.py:10 posts/models.py:152 posts/models.py:500
+msgid "Auteur"
+msgstr "Autor"
+
+#: accounts/models.py:11
+msgid "Éditeur"
+msgstr "Editor"
+
+#: accounts/models.py:12
+msgid "Administrateur"
+msgstr "Administrador"
+
+#: accounts/models.py:15 posts/models.py:363
+msgid "Email"
+msgstr "Email"
+
+#: accounts/models.py:16
+msgid "Rôle"
+msgstr "Rol"
+
+#: accounts/models.py:17
+msgid "Nom d'affichage"
+msgstr "Nombre para mostrar"
+
+#: accounts/models.py:18
+msgid "Biographie"
+msgstr "Biografía"
+
+#: accounts/models.py:19
+msgid "Avatar"
+msgstr "Avatar"
+
+#: accounts/models.py:20
+msgid "Site web"
+msgstr "Sitio web"
+
+#: accounts/models.py:21
+msgid "Twitter"
+msgstr "Twitter"
+
+#: accounts/models.py:22
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: accounts/models.py:23
+msgid "Localisation"
+msgstr "Ubicación"
+
+#: accounts/models.py:24
+msgid "Date de naissance"
+msgstr "Fecha de nacimiento"
+
+#: accounts/models.py:25
+msgid "Téléphone"
+msgstr "Teléfono"
+
+#: accounts/models.py:28
+msgid "Afficher l'email publiquement"
+msgstr "Mostrar email públicamente"
+
+#: accounts/models.py:29
+msgid "Recevoir les notifications par email"
+msgstr "Recibir notificaciones por email"
+
+#: accounts/models.py:32
+msgid "Email vérifié le"
+msgstr "Email verificado el"
+
+#: accounts/models.py:33
+msgid "Dernière IP de connexion"
+msgstr "Última IP de conexión"
+
+#: accounts/models.py:39 accounts/models.py:98 accounts/models.py:126
+#: posts/models.py:361 posts/models.py:419 posts/models.py:448
+#: posts/models.py:466 posts/models.py:552
+msgid "Utilisateur"
+msgstr "Usuario"
+
+#: accounts/models.py:40
+msgid "Utilisateurs"
+msgstr "Usuarios"
+
+#: accounts/models.py:42
+msgid "Peut modérer les commentaires"
+msgstr "Puede moderar comentarios"
+
+#: accounts/models.py:43
+msgid "Peut publier des articles"
+msgstr "Puede publicar artículos"
+
+#: accounts/models.py:44
+msgid "Peut gérer les catégories"
+msgstr "Puede gestionar categorías"
+
+#: accounts/models.py:45
+msgid "Peut voir les statistiques"
+msgstr "Puede ver estadísticas"
+
+#: accounts/models.py:99
+msgid "Clé de session"
+msgstr "Clave de sesión"
+
+#: accounts/models.py:100 accounts/models.py:129 posts/models.py:366
+#: posts/models.py:421
+msgid "Adresse IP"
+msgstr "Dirección IP"
+
+#: accounts/models.py:101 posts/models.py:367
+msgid "User Agent"
+msgstr "User Agent"
+
+#: accounts/models.py:102 posts/models.py:23 posts/models.py:503
+#: posts/models.py:556
+msgid "Créée le"
+msgstr "Creado el"
+
+#: accounts/models.py:103
+msgid "Dernière activité"
+msgstr "Última actividad"
+
+#: accounts/models.py:104 posts/models.py:22
+msgid "Active"
+msgstr "Activo"
+
+#: accounts/models.py:107
+msgid "Session utilisateur"
+msgstr "Sesión de usuario"
+
+#: accounts/models.py:108
+msgid "Sessions utilisateur"
+msgstr "Sesiones de usuario"
+
+#: accounts/models.py:117
+msgid "Connexion"
+msgstr "Conexión"
+
+#: accounts/models.py:118
+msgid "Déconnexion"
+msgstr "Desconexión"
+
+#: accounts/models.py:119
+msgid "Vue d'article"
+msgstr "Vista de artículo"
+
+#: accounts/models.py:120
+msgid "Like d'article"
+msgstr "Like de artículo"
+
+#: accounts/models.py:121 posts/models.py:364
+msgid "Commentaire"
+msgstr "Comentario"
+
+#: accounts/models.py:122
+msgid "Ajout signet"
+msgstr "Marcador añadido"
+
+#: accounts/models.py:123
+msgid "Mise à jour profil"
+msgstr "Actualización de perfil"
+
+#: accounts/models.py:127
+msgid "Action"
+msgstr "Acción"
+
+#: accounts/models.py:128 posts/models.py:63 posts/models.py:498
+#: posts/models.py:554
+msgid "Description"
+msgstr "Descripción"
+
+#: accounts/models.py:130
+msgid "Horodatage"
+msgstr "Marca de tiempo"
+
+#: accounts/models.py:133
+msgid "Activité utilisateur"
+msgstr "Actividad de usuario"
+
+#: accounts/models.py:134
+msgid "Activités utilisateur"
+msgstr "Actividades de usuario"
+
+#: accounts/templates/accounts/change_password.html:4
+#: accounts/templates/accounts/change_password.html:6
+msgid "password.change_title"
+msgstr "Cambiar Contraseña"
+
+#: accounts/templates/accounts/change_password.html:7
+msgid "password.change_subtitle"
+msgstr "Asegura tu cuenta"
+
+#: accounts/templates/accounts/change_password.html:21
+msgid "password.new_password_heading"
+msgstr "Nueva contraseña"
+
+#: accounts/templates/accounts/change_password.html:36
+msgid "password.current_password_label"
+msgstr "Contraseña actual"
+
+#: accounts/templates/accounts/change_password.html:46
+msgid "password.new_password_label"
+msgstr "Nueva contraseña"
+
+#: accounts/templates/accounts/change_password.html:59
+msgid "password.confirm_new_password_label"
+msgstr "Confirmar nueva contraseña"
+
+#: accounts/templates/accounts/change_password.html:69
+msgid "buttons.change_password"
+msgstr "Cambiar contraseña"
+
+#: accounts/templates/accounts/change_password.html:73
+msgid "buttons.cancel"
+msgstr "Cancelar"
+
+#: accounts/templates/accounts/login.html:4
+msgid "auth.login_title"
+msgstr "Iniciar Sesión - BlogFlow"
+
+#: accounts/templates/accounts/login.html:7
+#: accounts/templates/accounts/signup.html:7
+msgid "auth.no_header_comment"
+msgstr "Bienvenido a BlogFlow"
+
+#: accounts/templates/accounts/login.html:24
+msgid "auth.login_heading"
+msgstr "Inicia sesión en tu cuenta"
+
+#: accounts/templates/accounts/login.html:27
+#: accounts/templates/accounts/signup.html:27
+msgid "auth.or"
+msgstr "O"
+
+#: accounts/templates/accounts/login.html:29
+msgid "auth.create_new_account"
+msgstr "crear una nueva cuenta"
+
+#: accounts/templates/accounts/login.html:46
+#: accounts/templates/accounts/profile.html:32
+#: accounts/templates/accounts/signup.html:46
+msgid "forms.username_label"
+msgstr "Nombre de usuario"
+
+#: accounts/templates/accounts/login.html:63
+#: accounts/templates/accounts/signup.html:80
+msgid "forms.password_label"
+msgstr "Contraseña"
+
+#: accounts/templates/accounts/login.html:86
+msgid "buttons.login"
+msgstr "Iniciar Sesión"
+
+#: accounts/templates/accounts/my_articles.html:5
+#: accounts/templates/accounts/my_articles.html:7
+msgid "articles.my_articles_title"
+msgstr "Mis Artículos"
+
+#: accounts/templates/accounts/my_articles.html:8
+msgid "articles.manage_publications"
+msgstr "Gestiona tus publicaciones"
+
+#: accounts/templates/accounts/my_articles.html:14
+#, python-format
+msgid "My articles (%(count)s)"
+msgstr "Mis artículos (%(count)s)"
+
+#: accounts/templates/accounts/my_articles.html:20
+msgid "articles.new_article"
+msgstr "Nuevo artículo"
+
+#: accounts/templates/accounts/my_articles.html:36
+msgid "articles.no_articles_published"
+msgstr "Aún no has publicado artículos"
+
+#: accounts/templates/accounts/my_articles.html:37
+msgid "articles.start_sharing_ideas"
+msgstr "¡Comienza a compartir tus ideas creando tu primer artículo!"
+
+#: accounts/templates/accounts/my_articles.html:43
+msgid "articles.create_first_article"
+msgstr "Crear mi primer artículo"
+
+#: accounts/templates/accounts/profile.html:4
+#: accounts/templates/accounts/profile.html:6
+msgid "profile.page_title"
+msgstr "Mi Perfil"
+
+#: accounts/templates/accounts/profile.html:7
+msgid "profile.page_subtitle"
+msgstr "Gestiona tu información personal"
+
+#: accounts/templates/accounts/profile.html:21
+msgid "profile.account_info_title"
+msgstr "Información de la cuenta"
+
+#: accounts/templates/accounts/profile.html:40
+msgid "profile.display_name_label"
+msgstr "Nombre para mostrar"
+
+#: accounts/templates/accounts/profile.html:43
+msgid "profile.display_name_placeholder"
+msgstr "Dejar vacío para usar el nombre de usuario"
+
+#: accounts/templates/accounts/profile.html:49
+msgid "forms.first_name_label"
+msgstr "Nombre"
+
+#: accounts/templates/accounts/profile.html:57
+msgid "forms.last_name_label"
+msgstr "Apellido"
+
+#: accounts/templates/accounts/profile.html:65
+#: accounts/templates/accounts/signup.html:63
+msgid "forms.email_label"
+msgstr "Email"
+
+#: accounts/templates/accounts/profile.html:73
+msgid "profile.role_label"
+msgstr "Rol"
+
+#: accounts/templates/accounts/profile.html:82
+msgid "buttons.save_changes"
+msgstr "Guardar cambios"
+
+#: accounts/templates/accounts/profile.html:86
+msgid "profile.change_password_link"
+msgstr "Cambiar contraseña"
+
+#: accounts/templates/accounts/profile.html:95
+msgid "profile.statistics_title"
+msgstr "Estadísticas"
+
+#: accounts/templates/accounts/profile.html:102
+msgid "profile.published_articles"
+msgstr "Artículos publicados"
+
+#: accounts/templates/accounts/profile.html:107
+msgid "profile.member_since"
+msgstr "Miembro desde"
+
+#: accounts/templates/accounts/profile.html:112
+msgid "profile.last_login"
+msgstr "Último acceso"
+
+#: accounts/templates/accounts/signup.html:4
+msgid "auth.signup_title"
+msgstr "Registrarse - BlogFlow"
+
+#: accounts/templates/accounts/signup.html:24
+msgid "auth.signup_heading"
+msgstr "Crear una nueva cuenta"
+
+#: accounts/templates/accounts/signup.html:29
+msgid "auth.login_existing_account"
+msgstr "inicia sesión en tu cuenta existente"
+
+#: accounts/templates/accounts/signup.html:97
+msgid "forms.password_confirm_label"
+msgstr "Confirmar contraseña"
+
+#: accounts/templates/accounts/signup.html:120
+msgid "buttons.signup"
+msgstr "Registrarse"
+
+#: accounts/views.py:19
+#, python-format
+msgid "Bienvenue %(username)s!"
+msgstr "¡Bienvenido %(username)s!"
+
+#: accounts/views.py:34
+#, python-format
+msgid "Compte créé avec succès! Bienvenue %(username)s!"
+msgstr "¡Cuenta creada con éxito! ¡Bienvenido %(username)s!"
+
+#: accounts/views.py:61
+msgid "Profil mis à jour avec succès!"
+msgstr "¡Perfil actualizado con éxito!"
+
+#: accounts/views.py:73
+msgid "Votre mot de passe a été modifié avec succès!"
+msgstr "¡Tu contraseña ha sido cambiada con éxito!"
+
+#: dashboard/templates/dashboard/dashboard.html:5
+msgid "dashboard.page_title"
+msgstr "Panel - BlogFlow"
+
+#: dashboard/templates/dashboard/dashboard.html:7
+msgid "dashboard.heading"
+msgstr "Panel de Control"
+
+#: dashboard/templates/dashboard/dashboard.html:8
+msgid "dashboard.subtitle"
+msgstr "Gestiona tus artículos y sigue tus estadísticas"
+
+#: dashboard/templates/dashboard/dashboard.html:17
+#: dashboard/templates/dashboard/dashboard.html:89
+msgid "dashboard.my_articles"
+msgstr "Mis artículos"
+
+#: dashboard/templates/dashboard/dashboard.html:32
+msgid "dashboard.total_views"
+msgstr "Total de vistas"
+
+#: dashboard/templates/dashboard/dashboard.html:48
+msgid "dashboard.categories"
+msgstr "Categorías"
+
+#: dashboard/templates/dashboard/dashboard.html:63
+msgid "dashboard.average_per_article"
+msgstr "Promedio/artículo"
+
+#: dashboard/templates/dashboard/dashboard.html:77
+msgid "dashboard.quick_actions"
+msgstr "Acciones rápidas"
+
+#: dashboard/templates/dashboard/dashboard.html:83
+msgid "dashboard.new_article"
+msgstr "Nuevo artículo"
+
+#: dashboard/templates/dashboard/dashboard.html:95
+msgid "dashboard.my_profile"
+msgstr "Mi perfil"
+
+#: dashboard/templates/dashboard/dashboard.html:104
+msgid "dashboard.recent_articles"
+msgstr "Mis artículos recientes"
+
+#: dashboard/templates/dashboard/dashboard.html:106
+msgid "dashboard.view_all"
+msgstr "Ver todos"
+
+#: dashboard/templates/dashboard/dashboard.html:118
+msgid "dashboard.table.article"
+msgstr "Artículo"
+
+#: dashboard/templates/dashboard/dashboard.html:119
+msgid "dashboard.table.views"
+msgstr "Vistas"
+
+#: dashboard/templates/dashboard/dashboard.html:120
+msgid "dashboard.table.categories"
+msgstr "Categorías"
+
+#: dashboard/templates/dashboard/dashboard.html:121
+msgid "dashboard.table.date"
+msgstr "Fecha"
+
+#: dashboard/templates/dashboard/dashboard.html:122
+msgid "dashboard.table.actions"
+msgstr "Acciones"
+
+#: dashboard/templates/dashboard/dashboard.html:142
+msgid "status.published"
+msgstr "Publicado"
+
+#: dashboard/templates/dashboard/dashboard.html:146
+msgid "status.draft"
+msgstr "Borrador"
+
+#: dashboard/templates/dashboard/dashboard.html:169
+msgid "dashboard.no_category"
+msgstr "Sin categoría"
+
+#: dashboard/templates/dashboard/dashboard.html:178
+msgid "action.view"
+msgstr "Ver"
+
+#: dashboard/templates/dashboard/dashboard.html:184
+msgid "action.edit"
+msgstr "Editar"
+
+#: dashboard/templates/dashboard/dashboard.html:192
+msgid "action.unpublish"
+msgstr "Despublicar"
+
+#: dashboard/templates/dashboard/dashboard.html:198
+msgid "action.publish"
+msgstr "Publicar"
+
+#: dashboard/templates/dashboard/dashboard.html:222
+msgid "dashboard.no_articles_title"
+msgstr "Aún no hay artículos"
+
+#: dashboard/templates/dashboard/dashboard.html:223
+msgid "dashboard.no_articles_description"
+msgstr "Comienza escribiendo tu primer artículo para ver tus estadísticas aquí."
+
+#: dashboard/templates/dashboard/dashboard.html:228
+msgid "dashboard.write_first_article"
+msgstr "Escribir mi primer artículo"
+
+#: posts/forms.py:12 posts/models.py:153
+msgid "Contenu"
+msgstr "Contenido"
+
+#: posts/forms.py:17
+msgid "Sélectionnez les tags appropriés pour votre article"
+msgstr ""
+
+#: posts/forms.py:18 posts/models.py:70 posts/models.py:162
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: posts/forms.py:31
+msgid "Titre de l'article"
+msgstr ""
+
+#: posts/forms.py:36
+msgid "URL de l'article (laissez vide pour générer automatiquement)"
+msgstr ""
+
+#: posts/forms.py:41
+msgid "Résumé de l'article (500 caractères max)..."
+msgstr ""
+
+#: posts/forms.py:50
+msgid "Texte alternatif pour l'image"
+msgstr ""
+
+#: posts/forms.py:69 posts/models.py:182
+msgid "Titre SEO (60 caractères max)"
+msgstr "Título SEO (máx. 60 caracteres)"
+
+#: posts/forms.py:74 posts/models.py:183
+msgid "Description SEO (160 caractères max)"
+msgstr "Descripción SEO (máx. 160 caracteres)"
+
+#: posts/forms.py:95
+msgid "Le titre est obligatoire."
+msgstr "El título es obligatorio."
+
+#: posts/forms.py:97
+msgid "Le titre doit contenir au moins 5 caractères."
+msgstr "El título debe contener al menos 5 caracteres."
+
+#: posts/forms.py:103
+msgid "Le résumé doit contenir au moins 20 caractères."
+msgstr "El resumen debe contener al menos 20 caracteres."
+
+#: posts/forms.py:109
+msgid "Le contenu est obligatoire."
+msgstr "El contenido es obligatorio."
+
+#: posts/forms.py:115
+msgid "L'article doit contenir au moins 50 mots."
+msgstr "El artículo debe contener al menos 50 palabras."
+
+#: posts/forms.py:131
+msgid "Votre nom"
+msgstr "Tu nombre"
+
+#: posts/forms.py:136
+msgid "Votre email (ne sera pas publié)"
+msgstr "Tu email (no será publicado)"
+
+#: posts/forms.py:142
+msgid "Partagez votre opinion sur cet article..."
+msgstr "Comparte tu opinión sobre este artículo..."
+
+#: posts/forms.py:171
+msgid "Le commentaire ne peut pas être vide."
+msgstr "El comentario no puede estar vacío."
+
+#: posts/forms.py:173
+msgid "Le commentaire doit contenir au moins 5 caractères."
+msgstr "El comentario debe contener al menos 5 caracteres."
+
+#: posts/forms.py:175
+msgid "Le commentaire ne peut pas dépasser 1000 caractères."
+msgstr "El comentario no puede exceder 1000 caracteres."
+
+#: posts/forms.py:181
+msgid "Le nom est obligatoire."
+msgstr "El nombre es obligatorio."
+
+#: posts/forms.py:192
+msgid "Nom de la catégorie"
+msgstr ""
+
+#: posts/forms.py:196
+msgid "URL de la catégorie (laissez vide pour générer automatiquement)"
+msgstr ""
+
+#: posts/forms.py:201 posts/models.py:19
+msgid "Description de la catégorie"
+msgstr ""
+
+#: posts/forms.py:209 posts/models.py:20
+msgid "Classe d'icône (ex: fas fa-code)"
+msgstr ""
+
+#: posts/forms.py:227
+msgid "Nom du tag"
+msgstr ""
+
+#: posts/forms.py:231
+msgid "URL du tag (laissez vide pour générer automatiquement)"
+msgstr ""
+
+#: posts/forms.py:235
+msgid "Description du tag"
+msgstr ""
+
+#: posts/forms.py:253
+msgid "Rechercher des articles..."
+msgstr "Buscar artículos..."
+
+#: posts/forms.py:259
+msgid "Toutes les catégories"
+msgstr "Todas las categorías"
+
+#: posts/forms.py:267
+msgid "Tous les tags"
+msgstr "Todas las etiquetas"
+
+#: posts/forms.py:273
+msgid "Tous les niveaux"
+msgstr ""
+
+#: posts/forms.py:281
+msgid "Plus récents"
+msgstr "Más recientes"
+
+#: posts/forms.py:282
+msgid "Plus populaires"
+msgstr "Más populares"
+
+#: posts/forms.py:283
+msgid "Plus aimés"
+msgstr "Más gustados"
+
+#: posts/forms.py:284
+msgid "Plus vus"
+msgstr "Más vistos"
+
+#: posts/models.py:16 posts/models.py:61
+msgid "Nom"
+msgstr "Nombre"
+
+#: posts/models.py:17 posts/models.py:62 posts/models.py:151
+#: posts/models.py:497
+msgid "Slug"
+msgstr "Slug"
+
+#: posts/models.py:18
+msgid "Couleur en format hexadécimal (#RRGGBB)"
+msgstr ""
+
+#: posts/models.py:21
+msgid "Catégorie parente"
+msgstr "Categoría padre"
+
+#: posts/models.py:24 posts/models.py:504 posts/models.py:557
+msgid "Modifiée le"
+msgstr "Modificado el"
+
+#: posts/models.py:27
+msgid "Catégorie"
+msgstr "Categoría"
+
+#: posts/models.py:28 posts/models.py:161
+msgid "Catégories"
+msgstr "Categorías"
+
+#: posts/models.py:42
+msgid "Une catégorie ne peut pas être son propre parent."
+msgstr ""
+
+#: posts/models.py:64
+msgid "Couleur en format hexadécimal"
+msgstr ""
+
+#: posts/models.py:65
+msgid "Tag mis en avant"
+msgstr "Tag destacado"
+
+#: posts/models.py:66 posts/models.py:450 posts/models.py:468
+msgid "Créé le"
+msgstr "Creado el"
+
+#: posts/models.py:69
+msgid "Tag"
+msgstr "Etiqueta"
+
+#: posts/models.py:136
+msgid "Brouillon"
+msgstr "Borrador"
+
+#: posts/models.py:137
+msgid "Publié"
+msgstr "Publicado"
+
+#: posts/models.py:138
+msgid "Archivé"
+msgstr "Archivado"
+
+#: posts/models.py:139
+msgid "Programmé"
+msgstr "Programado"
+
+#: posts/models.py:143
+msgid "Débutant"
+msgstr "Principiante"
+
+#: posts/models.py:144
+msgid "Intermédiaire"
+msgstr "Intermedio"
+
+#: posts/models.py:145
+msgid "Avancé"
+msgstr "Avanzado"
+
+#: posts/models.py:146
+msgid "Expert"
+msgstr "Experto"
+
+#: posts/models.py:150
+msgid "Titre"
+msgstr "Título"
+
+#: posts/models.py:151
+msgid "URL de l'article"
+msgstr "URL del artículo"
+
+#: posts/models.py:154
+msgid "Résumé de l'article (500 caractères max)"
+msgstr "Resumen del artículo (máx. 500 caracteres)"
+
+#: posts/models.py:154
+msgid "Résumé"
+msgstr "Resumen"
+
+#: posts/models.py:157
+msgid "Image de couverture"
+msgstr "Imagen de portada"
+
+#: posts/models.py:158
+msgid "Texte alternatif de l'image"
+msgstr "Texto alternativo de imagen"
+
+#: posts/models.py:165
+msgid "Statut"
+msgstr "Estado"
+
+#: posts/models.py:166
+msgid "Article mis en avant"
+msgstr "Artículo destacado"
+
+#: posts/models.py:167
+msgid "Article épinglé"
+msgstr "Artículo fijado"
+
+#: posts/models.py:168
+msgid "Autoriser les commentaires"
+msgstr "Permitir comentarios"
+
+#: posts/models.py:169
+msgid "Publié le"
+msgstr "Publicado el"
+
+#: posts/models.py:172
+msgid "Nombre de vues"
+msgstr "Número de vistas"
+
+#: posts/models.py:173
+msgid "Nombre de likes"
+msgstr "Número de likes"
+
+#: posts/models.py:174
+msgid "Niveau de difficulté"
+msgstr "Nivel de dificultad"
+
+#: posts/models.py:175
+msgid "Temps de lecture (minutes)"
+msgstr "Tiempo de lectura (minutos)"
+
+#: posts/models.py:178 posts/models.py:368 posts/models.py:422
+msgid "Date de création"
+msgstr "Fecha de creación"
+
+#: posts/models.py:179 posts/models.py:369
+msgid "Date de modification"
+msgstr "Fecha de modificación"
+
+#: posts/models.py:182
+msgid "Titre SEO"
+msgstr "Título SEO"
+
+#: posts/models.py:183
+msgid "Description SEO"
+msgstr "Descripción SEO"
+
+#: posts/models.py:184
+msgid "URL canonique"
+msgstr "URL canónica"
+
+#: posts/models.py:190 posts/models.py:360 posts/models.py:418
+#: posts/models.py:449 posts/models.py:467 posts/models.py:535
+#: posts/models.py:574
+msgid "Article"
+msgstr "Artículo"
+
+#: posts/models.py:191
+msgid "Articles"
+msgstr "Artículos"
+
+#: posts/models.py:203
+msgid "Peut mettre en avant un article"
+msgstr "Puede destacar un artículo"
+
+#: posts/models.py:204
+msgid "Peut épingler un article"
+msgstr "Puede fijar un artículo"
+
+#: posts/models.py:205
+msgid "Peut programmer un article"
+msgstr "Puede programar un artículo"
+
+#: posts/models.py:240
+msgid "Le titre ne peut pas dépasser 200 caractères."
+msgstr ""
+
+#: posts/models.py:242
+msgid "Le résumé ne peut pas dépasser 500 caractères."
+msgstr ""
+
+#: posts/models.py:362
+msgid "Nom de l'auteur"
+msgstr "Nombre del autor"
+
+#: posts/models.py:365
+msgid "Réponse à"
+msgstr "Respuesta a"
+
+#: posts/models.py:370
+msgid "Approuvé"
+msgstr "Aprobado"
+
+#: posts/models.py:371
+msgid "Spam"
+msgstr "Spam"
+
+#: posts/models.py:375
+msgid "Commentaire d'article"
+msgstr "Comentario de artículo"
+
+#: posts/models.py:376
+msgid "Commentaires d'articles"
+msgstr "Comentarios de artículos"
+
+#: posts/models.py:410
+msgid "👍 J'aime"
+msgstr "👍 Me gusta"
+
+#: posts/models.py:411
+msgid "❤️ Adore"
+msgstr "❤️ Amo"
+
+#: posts/models.py:412
+msgid "😂 Drôle"
+msgstr "😂 Divertido"
+
+#: posts/models.py:413
+msgid "😮 Impressionnant"
+msgstr "😮 Impresionante"
+
+#: posts/models.py:414
+msgid "😢 Triste"
+msgstr "😢 Triste"
+
+#: posts/models.py:415
+msgid "😠 En colère"
+msgstr "😠 Enfadado"
+
+#: posts/models.py:420
+msgid "Type de réaction"
+msgstr "Tipo de reacción"
+
+#: posts/models.py:429
+msgid "Réaction d'article"
+msgstr "Reacción de artículo"
+
+#: posts/models.py:430
+msgid "Réactions d'articles"
+msgstr "Reacciones de artículos"
+
+#: posts/models.py:451
+msgid "Note personnelle"
+msgstr ""
+
+#: posts/models.py:455
+msgid "Signet"
+msgstr "Marcador"
+
+#: posts/models.py:456
+msgid "Signets"
+msgstr "Marcadores"
+
+#: posts/models.py:472 posts/models.py:473
+msgid "J'aime"
+msgstr "Me gusta"
+
+#: posts/models.py:496
+msgid "Titre de la série"
+msgstr ""
+
+#: posts/models.py:499
+msgid "Image de la série"
+msgstr ""
+
+#: posts/models.py:501
+msgid "Série terminée"
+msgstr ""
+
+#: posts/models.py:502
+msgid "Série publique"
+msgstr ""
+
+#: posts/models.py:507
+msgid "Série d'articles"
+msgstr ""
+
+#: posts/models.py:508
+msgid "Séries d'articles"
+msgstr ""
+
+#: posts/models.py:534
+msgid "Série"
+msgstr ""
+
+#: posts/models.py:536
+msgid "Ordre dans la série"
+msgstr ""
+
+#: posts/models.py:541
+msgid "Article de série"
+msgstr ""
+
+#: posts/models.py:542
+msgid "Articles de série"
+msgstr ""
+
+#: posts/models.py:553
+msgid "Nom de la liste"
+msgstr ""
+
+#: posts/models.py:555
+msgid "Liste publique"
+msgstr ""
+
+#: posts/models.py:561 posts/models.py:573
+msgid "Liste de lecture"
+msgstr ""
+
+#: posts/models.py:562
+msgid "Listes de lecture"
+msgstr ""
+
+#: posts/models.py:575
+msgid "Ajouté le"
+msgstr ""
+
+#: posts/models.py:576
+msgid "Lu"
+msgstr ""
+
+#: posts/models.py:577
+msgid "Lu le"
+msgstr ""
+
+#: posts/models.py:582
+msgid "Article de liste de lecture"
+msgstr ""
+
+#: posts/models.py:583
+msgid "Articles de liste de lecture"
+msgstr ""
+
+#: posts/templates/base.html:7
+msgid "blog.title"
+msgstr "BlogFlow - Blog Django"
+
+#: posts/templates/base.html:751
+msgid "header.tagline"
+msgstr "Crear • Compartir • Inspirar"
+
+#: posts/templates/base.html:759 posts/templates/base.html:932
+#: posts/templates/base.html:1024
+msgid "nav.home"
+msgstr "Inicio"
+
+#: posts/templates/base.html:763 posts/templates/base.html:933
+msgid "nav.explore"
+msgstr "Explorar"
+
+#: posts/templates/base.html:768
+msgid "nav.dashboard"
+msgstr "Panel"
+
+#: posts/templates/base.html:773
+msgid "nav.write"
+msgstr "Escribir"
+
+#: posts/templates/base.html:777 posts/templates/base.html:934
+#: posts/templates/base.html:1026
+msgid "nav.categories"
+msgstr "Categorías"
+
+#: posts/templates/base.html:781 posts/templates/base.html:935
+#: posts/templates/base.html:1035
+msgid "nav.about"
+msgstr "Acerca de"
+
+#: posts/templates/base.html:831 posts/templates/base.html:911
+msgid "theme.toggle"
+msgstr "Cambiar modo oscuro"
+
+#: posts/templates/base.html:848
+msgid "nav.admin"
+msgstr "Admin"
+
+#: posts/templates/base.html:874
+msgid "nav.profile"
+msgstr "Mi Perfil"
+
+#: posts/templates/base.html:881
+msgid "nav.my_articles"
+msgstr "Mis Artículos"
+
+#: posts/templates/base.html:892 posts/templates/base.html:951
+msgid "auth.logout"
+msgstr "Cerrar Sesión"
+
+#: posts/templates/base.html:900 posts/templates/base.html:955
+msgid "auth.login"
+msgstr "Iniciar Sesión"
+
+#: posts/templates/base.html:903 posts/templates/base.html:958
+msgid "auth.signup"
+msgstr "Registrarse"
+
+#: posts/templates/base.html:944 posts/templates/base.html:1037
+msgid "nav.administration"
+msgstr "Administración"
+
+#: posts/templates/base.html:948
+#, python-format
+msgid "Connecté en tant que <span class=\"font-semibold\">%(username)s</span>"
+msgstr "Conectado como <span class=\"font-semibold\">%(username)s</span>"
+
+#: posts/templates/base.html:995
+msgid "footer.subtitle"
+msgstr "Django y Python"
+
+#: posts/templates/base.html:999
+msgid "footer.description"
+msgstr "Una plataforma moderna para compartir ideas, tutoriales y experiencias en desarrollo web y tecnología."
+
+#: posts/templates/base.html:1022
+msgid "footer.navigation"
+msgstr "Navegación"
+
+#: posts/templates/base.html:1025
+msgid "footer.all_articles"
+msgstr "Todos los Artículos"
+
+#: posts/templates/base.html:1027
+msgid "footer.archives"
+msgstr "Archivos"
+
+#: posts/templates/base.html:1033
+msgid "footer.resources"
+msgstr "Recursos"
+
+#: posts/templates/base.html:1036
+msgid "footer.contact"
+msgstr "Contacto"
+
+#: posts/templates/base.html:1038
+msgid "footer.rss_feed"
+msgstr "Feed RSS"
+
+#: posts/templates/base.html:1046
+msgid "footer.all_rights_reserved"
+msgstr "Todos los derechos reservados."
+
+#: posts/templates/base.html:1049
+msgid "footer.created_with"
+msgstr "Creado con"
+
+#: posts/templates/base.html:1049
+msgid "footer.and"
+msgstr "y"
+
+#: posts/templates/posts/ajouter_article.html:4
+msgid "articles.edit_title"
+msgstr "Editar Artículo"
+
+#: posts/templates/posts/ajouter_article.html:4
+msgid "articles.add_title"
+msgstr "Crear Artículo"
+
+#: posts/templates/posts/ajouter_article.html:4
+#: posts/templates/posts/article_detail.html:6
+msgid "articles.site_name"
+msgstr "BlogFlow"
+
+#: posts/templates/posts/ajouter_article.html:6
+#: posts/templates/posts/ajouter_article.html:21
+msgid "articles.edit_article"
+msgstr "Editar Artículo"
+
+#: posts/templates/posts/ajouter_article.html:6
+msgid "articles.create_new_article"
+msgstr "Crear Nuevo Artículo"
+
+#: posts/templates/posts/ajouter_article.html:7
+msgid "articles.update_your_content"
+msgstr "Actualiza tu contenido"
+
+#: posts/templates/posts/ajouter_article.html:7
+msgid "articles.share_your_ideas"
+msgstr "Comparte tus ideas con la comunidad"
+
+#: posts/templates/posts/ajouter_article.html:21
+msgid "articles.write_article"
+msgstr "Escribir Artículo"
+
+#: posts/templates/posts/ajouter_article.html:22
+msgid "articles.edit_form_subtitle"
+msgstr "Edita y mejora tu artículo"
+
+#: posts/templates/posts/ajouter_article.html:22
+msgid "articles.create_form_subtitle"
+msgstr "Comparte tu conocimiento con la comunidad"
+
+#: posts/templates/posts/ajouter_article.html:36
+#, python-format
+msgid ""
+"This article will be published under the name: <strong>%(username)s</strong>"
+msgstr "Este artículo será publicado bajo el nombre: <strong>%(username)s</strong>"
+
+#: posts/templates/posts/ajouter_article.html:47
+msgid "articles.form_errors"
+msgstr "Por favor corrige los errores de abajo"
+
+#: posts/templates/posts/ajouter_article.html:76
+msgid "articles.article_title"
+msgstr "Título del Artículo"
+
+#: posts/templates/posts/ajouter_article.html:87
+msgid "articles.title_placeholder"
+msgstr "Ingresa el título del artículo..."
+
+#: posts/templates/posts/ajouter_article.html:104
+msgid "articles.article_summary"
+msgstr "Resumen del Artículo"
+
+#: posts/templates/posts/ajouter_article.html:116
+msgid "articles.summary_placeholder"
+msgstr "Breve resumen de tu artículo..."
+
+#: posts/templates/posts/ajouter_article.html:119
+msgid "articles.summary_help_text"
+msgstr "Un buen resumen ayuda a los lectores a entender rápidamente el tema de tu artículo"
+
+#: posts/templates/posts/ajouter_article.html:133
+msgid "articles.article_content"
+msgstr "Contenido del Artículo"
+
+#: posts/templates/posts/ajouter_article.html:139
+msgid "articles.content_placeholder"
+msgstr "Escribe el contenido de tu artículo aquí..."
+
+#: posts/templates/posts/ajouter_article.html:142
+msgid "articles.content_help_text"
+msgstr "Puedes usar Markdown para formatear tu texto"
+
+#: posts/templates/posts/ajouter_article.html:156
+msgid "articles.categories"
+msgstr "Categorías"
+
+#: posts/templates/posts/ajouter_article.html:167
+msgid "articles.no_categories"
+msgstr "No hay categorías disponibles."
+
+#: posts/templates/posts/ajouter_article.html:167
+msgid "articles.create_one"
+msgstr "¡Crea una!"
+
+#: posts/templates/posts/ajouter_article.html:170
+msgid "articles.categories_help_text"
+msgstr "Elige una o más categorías para tu artículo"
+
+#: posts/templates/posts/ajouter_article.html:184
+msgid "articles.article_image"
+msgstr "Imagen del Artículo"
+
+#: posts/templates/posts/ajouter_article.html:184
+msgid "articles.optional"
+msgstr "opcional"
+
+#: posts/templates/posts/ajouter_article.html:195
+msgid "articles.click_to_upload"
+msgstr "Haz clic para subir"
+
+#: posts/templates/posts/ajouter_article.html:195
+msgid "articles.or_drag_drop"
+msgstr "o arrastra y suelta"
+
+#: posts/templates/posts/ajouter_article.html:197
+msgid "articles.image_formats"
+msgstr "JPG, PNG o GIF (max. 5MB)"
+
+#: posts/templates/posts/ajouter_article.html:209
+msgid "articles.change"
+msgstr "Cambiar"
+
+#: posts/templates/posts/ajouter_article.html:212
+msgid "articles.delete"
+msgstr "Eliminar"
+
+#: posts/templates/posts/ajouter_article.html:222
+msgid "articles.image_selected"
+msgstr "Imagen seleccionada"
+
+#: posts/templates/posts/ajouter_article.html:234
+msgid "articles.image_help_text"
+msgstr "Una imagen atractiva aumenta el engagement de los lectores"
+
+#: posts/templates/posts/ajouter_article.html:251
+msgid "articles.cancel"
+msgstr "Cancelar"
+
+#: posts/templates/posts/ajouter_article.html:255
+msgid "articles.save_as_draft"
+msgstr "Guardar como borrador"
+
+#: posts/templates/posts/ajouter_article.html:261
+msgid "articles.update_article"
+msgstr "Actualizar artículo"
+
+#: posts/templates/posts/ajouter_article.html:261
+msgid "articles.publish_article"
+msgstr "Publicar Artículo"
+
+#: posts/templates/posts/ajouter_article.html:271
+msgid "articles.tips_title"
+msgstr "Consejos de Escritura"
+
+#: posts/templates/posts/ajouter_article.html:277
+msgid "articles.tip_catchy_title"
+msgstr "Usa un título atractivo y descriptivo"
+
+#: posts/templates/posts/ajouter_article.html:283
+msgid "articles.tip_structure_content"
+msgstr "Estructura tu contenido con títulos y párrafos"
+
+#: posts/templates/posts/ajouter_article.html:289
+msgid "articles.tip_proofread"
+msgstr "Revisa tu artículo antes de publicarlo"
+
+#: posts/templates/posts/article_detail.html:9
+msgid "articles.by"
+msgstr "por"
+
+#: posts/templates/posts/article_detail.html:76
+#: posts/templates/posts/explorer.html:343
+#, python-format
+msgid "%(words)s word"
+msgid_plural "%(words)s words"
+msgstr[0] "%(words)s palabra"
+msgstr[1] "%(words)s palabras"
+
+#: posts/templates/posts/article_detail.html:91
+msgid "articles.your_reaction"
+msgstr "Tu reacción"
+
+#: posts/templates/posts/article_detail.html:110
+msgid "articles.login_to_react"
+msgstr "Inicia sesión para reaccionar"
+
+#: posts/templates/posts/article_detail.html:115
+msgid "articles.login"
+msgstr "Iniciar sesión"
+
+#: posts/templates/posts/article_detail.html:132
+msgid "articles.comments"
+msgstr "Comentarios"
+
+#: posts/templates/posts/article_detail.html:133
+#, python-format
+msgid "%(count)s comment"
+msgid_plural "%(count)s comments"
+msgstr[0] "%(count)s comentario"
+msgstr[1] "%(count)s comentarios"
+
+#: posts/templates/posts/article_detail.html:140
+msgid "articles.leave_comment"
+msgstr "Dejar un comentario"
+
+#: posts/templates/posts/article_detail.html:147
+msgid "articles.your_name"
+msgstr "Tu nombre"
+
+#: posts/templates/posts/article_detail.html:170
+msgid "articles.your_comment"
+msgstr "Tu comentario"
+
+#: posts/templates/posts/article_detail.html:184
+msgid "articles.publish_comment"
+msgstr "Publicar comentario"
+
+#: posts/templates/posts/article_detail.html:222
+msgid "articles.no_comments_yet"
+msgstr "Aún no hay comentarios"
+
+#: posts/templates/posts/article_detail.html:223
+msgid "articles.be_first_to_comment"
+msgstr "¡Sé el primero en comentar este artículo!"
+
+#: posts/templates/posts/article_detail.html:235
+msgid "articles.back_to_articles"
+msgstr "Volver a los artículos"
+
+#: posts/templates/posts/categories.html:5
+#: posts/templates/posts/categories.html:7
+#: posts/templates/posts/category_detail.html:6
+msgid "categories.title"
+msgstr "Categorías"
+
+#: posts/templates/posts/categories.html:5
+msgid "categories.site_name"
+msgstr "BlogFlow"
+
+#: posts/templates/posts/categories.html:8
+msgid "categories.subtitle"
+msgstr "Explora nuestros artículos por temática"
+
+#: posts/templates/posts/categories.html:44
+#, python-format
+msgid "%(count)s article"
+msgid_plural "%(count)s articles"
+msgstr[0] ""
+msgstr[1] ""
+
+#: posts/templates/posts/categories.html:47
+msgid "categories.explore"
+msgstr "Explorar"
+
+#: posts/templates/posts/categories.html:66
+msgid "categories.no_categories_yet"
+msgstr ""
+
+#: posts/templates/posts/categories.html:67
+msgid "categories.categories_will_be_created"
+msgstr ""
+
+#: posts/templates/posts/categories.html:73
+msgid "categories.create_category"
+msgstr ""
+
+#: posts/templates/posts/category_detail.html:9
+msgid "categories.articles_in_category"
+msgstr ""
+
+#: posts/templates/posts/category_detail.html:24
+#, python-format
+msgid "%(count)s article in this category"
+msgid_plural "%(count)s articles in this category"
+msgstr[0] ""
+msgstr[1] ""
+
+#: posts/templates/posts/category_detail.html:31
+msgid "categories.all_categories"
+msgstr ""
+
+#: posts/templates/posts/category_detail.html:51
+msgid "categories.no_articles_in_category"
+msgstr ""
+
+#: posts/templates/posts/category_detail.html:52
+#, python-format
+msgid "Be the first to write an article in the category \"%(name)s\"."
+msgstr ""
+
+#: posts/templates/posts/category_detail.html:58
+msgid "categories.write_article"
+msgstr ""
+
+#: posts/templates/posts/category_detail.html:65
+msgid "categories.login_to_write"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:5 posts/templates/posts/explorer.html:7
+msgid "articles.explore_title"
+msgstr "Explorar Artículos"
+
+#: posts/templates/posts/explorer.html:8
+msgid "articles.explore_subtitle"
+msgstr "Descubre nuestra colección de artículos"
+
+#: posts/templates/posts/explorer.html:53
+msgid "articles.explore_banner_title"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:56
+msgid "articles.explore_banner_subtitle"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:62
+msgid "articles.explore_banner_info"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:83
+msgid "articles.search_placeholder"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:91
+msgid "articles.all_categories"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:106
+msgid "articles.search"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:113
+msgid "articles.clear"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:128
+#, python-format
+msgid "Results for \"%(search_query)s\""
+msgstr ""
+
+#: posts/templates/posts/explorer.html:130
+msgid "articles.articles_in_category"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:132
+msgid "articles.all_articles"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:137
+#, python-format
+msgid "%(count)s result found"
+msgid_plural "%(count)s results found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: posts/templates/posts/explorer.html:139
+msgid "articles.browse_collection"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:191
+msgid "articles.verified_author"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:216
+#, python-format
+msgid "%(count)s reaction"
+msgid_plural "%(count)s reactions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: posts/templates/posts/explorer.html:226
+#: posts/templates/posts/explorer.html:281
+msgid "articles.like"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:231
+#: posts/templates/posts/explorer.html:287
+msgid "articles.love"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:236
+#: posts/templates/posts/explorer.html:293
+msgid "articles.laugh"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:241
+#: posts/templates/posts/explorer.html:299
+msgid "articles.wow"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:264
+msgid "articles.more"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:275
+msgid "articles.all_reactions"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:305
+msgid "articles.sad"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:311
+msgid "articles.angry"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:316
+msgid "articles.new"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:316
+msgid "articles.multiple_reactions_info"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:326
+msgid "articles.view_full_article"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:350
+msgid "articles.read_time"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:354
+msgid "articles.read"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:375
+msgid "articles.your_story_starts_here"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:377
+msgid "articles.be_first_to_share"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:384
+msgid "articles.write_first_article"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:391
+msgid "articles.login_to_write"
+msgstr ""
+
+#: posts/templates/posts/explorer.html:628
+msgid "articles.login_required_to_react"
+msgstr ""
+
+#: posts/templates/posts/home.html:6
+msgid "page.home.title"
+msgstr "Inicio - DevSpace"
+
+#: posts/templates/posts/home.html:8
+msgid "page.home.brand"
+msgstr "DevSpace"
+
+#: posts/templates/posts/home.html:9
+msgid "page.home.subtitle"
+msgstr "Explora artículos emocionantes y comparte tus ideas"
+
+#: posts/templates/posts/home.html:54
+msgid "hero.welcome"
+msgstr "Bienvenido a tu espacio creativo"
+
+#: posts/templates/posts/home.html:57
+msgid "hero.description"
+msgstr "Descubre artículos inspiradores, comparte tus ideas y únete a una comunidad apasionada por la escritura y el intercambio de conocimientos."
+
+#: posts/templates/posts/home.html:65
+msgid "action.write_article"
+msgstr "Escribir un artículo"
+
+#: posts/templates/posts/home.html:74
+msgid "stats.articles"
+msgstr "artículos"
+
+#: posts/templates/posts/home.html:80
+msgid "stats.authors"
+msgstr "autores"
+
+#: posts/templates/posts/home.html:87
+msgid "stats.views"
+msgstr "vistas"
+
+#: posts/templates/posts/home.html:93
+msgid "stats.comments"
+msgstr "comentarios"
+
+#: posts/templates/posts/home.html:116
+msgid "search.placeholder"
+msgstr "Buscar en artículos..."
+
+#: posts/templates/posts/home.html:124
+msgid "filter.all_categories"
+msgstr "Todas las categorías"
+
+#: posts/templates/posts/home.html:139
+msgid "action.search"
+msgstr "Buscar"
+
+#: posts/templates/posts/home.html:146
+msgid "action.clear"
+msgstr "Limpiar"
+
+#: posts/templates/posts/home.html:161
+#, python-format
+msgid "Résultats pour \"%(query)s\""
+msgstr ""
+
+#: posts/templates/posts/home.html:163
+msgid "title.articles_in_category"
+msgstr "Artículos en categoría"
+
+#: posts/templates/posts/home.html:165
+msgid "title.recent_articles"
+msgstr "Artículos recientes"
+
+#: posts/templates/posts/home.html:170
+#, python-format
+msgid "%(count)s résultat trouvé"
+msgid_plural "%(count)s résultats trouvés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: posts/templates/posts/home.html:172
+msgid "subtitle.discover_latest"
+msgstr "Descubre las últimas publicaciones de nuestra comunidad"
+
+#: posts/templates/posts/home.html:195
+msgid "empty.title"
+msgstr "Tu historia comienza aquí"
+
+#: posts/templates/posts/home.html:197
+msgid "empty.description"
+msgstr "Sé el primero en compartir tus ideas e inspira a otros con tu primer artículo."
+
+#: posts/templates/posts/home.html:204
+msgid "action.write_first_article"
+msgstr "Escribir mi primer artículo"
+
+#: posts/templates/posts/home.html:211
+msgid "action.login_to_write"
+msgstr "Iniciar sesión para escribir"
+
+#: posts/templates/posts/home.html:448
+msgid "message.login_required_react"
+msgstr "Debes estar conectado para reaccionar a los artículos"
+
+#: posts/templates/posts/home.html:509
+msgid "reaction.added"
+msgstr "✨ ¡Reacción añadida!"
+
+#: posts/templates/posts/home.html:512
+msgid "reaction.removed"
+msgstr "🗑️ ¡Reacción eliminada!"
+
+#: posts/templates/posts/home.html:515
+msgid "reaction.updated"
+msgstr "🎉 ¡Reacción actualizada!"
+
+#: posts/templates/posts/home.html:532
+msgid "error.reaction_failed"
+msgstr "Error al añadir reacción"
+
+#: posts/views.py:213 posts/views.py:445
+msgid "Article enregistré comme brouillon!"
+msgstr "¡Artículo guardado como borrador!"
+
+#: posts/views.py:216 posts/views.py:416 posts/views.py:448
+msgid "Article publié avec succès!"
+msgstr "¡Artículo publicado con éxito!"
+
+#: posts/views.py:227
+msgid "Erreur dans le formulaire. Veuillez vérifier les champs."
+msgstr "Error en el formulario. Por favor verifica los campos."
+
+#: posts/views.py:239
+msgid "Cet article n'est pas encore publié."
+msgstr "Este artículo aún no está publicado."
+
+#: posts/views.py:275
+msgid "Votre commentaire a été ajouté avec succès!"
+msgstr "¡Tu comentario ha sido añadido con éxito!"
+
+#: posts/views.py:317
+#, python-format
+msgid "Réaction %(reaction)s supprimée!"
+msgstr "¡Reacción %(reaction)s eliminada!"
+
+#: posts/views.py:326
+#, python-format
+msgid "Réaction %(reaction)s ajoutée!"
+msgstr "¡Reacción %(reaction)s añadida!"
+
+#: posts/views.py:413
+msgid "Article remis en brouillon."
+msgstr "Artículo movido de vuelta a borrador."
+
+# Traducciones para la sección de Autores
+msgid "nav.authors"
+msgstr "Autores"
+
+msgid "authors.page_title"
+msgstr "Autores"
+
+msgid "authors.page_subtitle"
+msgstr "Descubre los autores de nuestra comunidad"
+
+msgid "authors.discover_title"
+msgstr "Descubre Nuestros Autores"
+
+msgid "authors.discover_subtitle"
+msgstr "Explora los perfiles de nuestros talentosos contribuidores y descubre sus artículos"
+
+msgid "authors.articles"
+msgstr "Artículos"
+
+msgid "authors.views"
+msgstr "Vistas"
+
+msgid "authors.reactions"
+msgstr "Reacciones"
+
+msgid "authors.view_profile"
+msgstr "Ver perfil"
+
+msgid "authors.no_authors_title"
+msgstr "Aún no hay autores"
+
+msgid "authors.no_authors_subtitle"
+msgstr "Los autores aparecerán aquí una vez que hayan publicado artículos"
+
+msgid "authors.pagination"
+msgstr "Navegación de páginas"
+
+msgid "authors.previous"
+msgstr "Anterior"
+
+msgid "authors.next"
+msgstr "Siguiente"
+
+msgid "authors.profile_title"
+msgstr "Perfil del Autor"
+
+msgid "authors.about"
+msgstr "Acerca de"
+
+msgid "authors.member_since"
+msgstr "Miembro desde"
+
+msgid "authors.last_seen"
+msgstr "Última vez visto"
+
+msgid "authors.statistics"
+msgstr "Estadísticas"
+
+msgid "authors.articles_published"
+msgstr "Artículos publicados"
+
+msgid "authors.total_views"
+msgstr "Vistas totales"
+
+msgid "authors.total_reactions"
+msgstr "Reacciones totales"
+
+msgid "authors.total_comments"
+msgstr "Comentarios totales"
+
+msgid "authors.recent_articles"
+msgstr "Artículos recientes"
+
+msgid "authors.popular_articles"
+msgstr "Artículos populares"
+
+msgid "authors.all_articles"
+msgstr "Todos los artículos"
+
+msgid "authors.no_articles_title"
+msgstr "Sin artículos publicados"
+
+msgid "authors.no_articles_subtitle"
+msgstr "Este autor aún no ha publicado ningún artículo"
+
+msgid "authors.back_to_authors"
+msgstr "Volver a autores"

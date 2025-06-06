@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+{% load blog_extras %}
+
+{% block title %}Recherche{% if query %} - {{ query }}{% endif %} - BlogFlow{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Search Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Recherche Avancée
+        </h1>
+        {% if query %}
+        <p class="text-xl text-gray-600 dark:text-gray-300">
+            Résultats pour : <span class="font-semibold">"{{ query }}"</span>
+        </p>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">
+            {{ articles.paginator.count }} résultat{{ articles.paginator.count|pluralize }} trouvé{{ articles.paginator.count|pluralize }}
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Search Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <form method="get" class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Search Query -->
+                <div class="lg:col-span-3">
+                    <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Rechercher dans les articles
+                    </label>
+                    <input type="text" name="q" id="q" value="{{ query }}"
+                           placeholder="Mots-clés, titre, contenu..."
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                </div>
+                
+                <!-- Category Filter -->
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Catégorie
+                    </label>
+                    <select name="category" id="category" 
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Toutes les catégories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Tag Filter -->
+                <div>
+                    <label for="tag" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Tag
+                    </label>
+                    <select name="tag" id="tag" 
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Tous les tags</option>
+                        {% for tag in tags %}
+                        <option value="{{ tag.id }}" {% if tag.id|stringformat:"s" == selected_tag %}selected{% endif %}>
+                            {{ tag.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Difficulty Filter -->
+                <div>
+                    <label for="difficulty" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Niveau
+                    </label>
+                    <select name="difficulty" id="difficulty" 
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Tous les niveaux</option>
+                        {% for value, label in difficulty_choices %}
+                        <option value="{{ value }}" {% if value == selected_difficulty %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Date From -->
+                <div>
+                    <label for="date_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Date de début
+                    </label>
+                    <input type="date" name="date_from" id="date_from" value="{{ date_from }}"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                </div>
+                
+                <!-- Date To -->
+                <div>
+                    <label for="date_to" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Date de fin
+                    </label>
+                    <input type="date" name="date_to" id="date_to" value="{{ date_to }}"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                </div>
+                
+                <!-- Sort By -->
+                <div>
+                    <label for="sort" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Trier par
+                    </label>
+                    <select name="sort" id="sort" 
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="relevance" {% if sort_by == 'relevance' %}selected{% endif %}>Pertinence</option>
+                        <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Plus récent</option>
+                        <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Plus vus</option>
+                        <option value="likes" {% if sort_by == 'likes' %}selected{% endif %}>Plus aimés</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex justify-center space-x-4">
+                <button type="submit" 
+                        class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Rechercher
+                </button>
+                <a href="{% url 'posts:search' %}" 
+                   class="px-6 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">
+                    Réinitialiser
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    {% if articles %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {% for article in articles %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            {% if article.image %}
+            <div class="aspect-w-16 aspect-h-9">
+                <img src="{{ article.image.url }}" 
+                     alt="{{ article.image_alt|default:article.titre }}"
+                     class="w-full h-48 object-cover">
+            </div>
+            {% endif %}
+            
+            <div class="p-6">
+                <!-- Categories -->
+                {% if article.categories.all %}
+                <div class="flex flex-wrap gap-2 mb-3">
+                    {% for category in article.categories.all %}
+                    <span class="inline-block px-2 py-1 text-xs font-medium text-white rounded"
+                          style="background-color: {{ category.color }};">
+                        {{ category.name }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <a href="{{ article.get_absolute_url }}">{{ article.titre }}</a>
+                </h3>
+                
+                <!-- Excerpt -->
+                <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                    {{ article.get_excerpt }}
+                </p>
+                
+                <!-- Meta Info -->
+                <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span>Par {{ article.get_author_display_name }}</span>
+                        <span>•</span>
+                        <time datetime="{{ article.date_creation|date:'c' }}">
+                            {{ article.date_creation|date:'j F Y' }}
+                        </time>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <span class="flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            {{ article.vues }}
+                        </span>
+                        
+                        <span class="flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            {{ article.likes_count }}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Tags -->
+                {% if article.tags.all %}
+                <div class="flex flex-wrap gap-1 mb-4">
+                    {% for tag in article.tags.all %}
+                    <a href="{% url 'posts:tag_detail' tag.slug %}" 
+                       class="inline-block px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        #{{ tag.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Difficulty Badge -->
+                <div class="flex items-center justify-between">
+                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full {{ article.get_difficulty_color }}-100 text-{{ article.get_difficulty_color }}-800 dark:bg-{{ article.get_difficulty_color }}-900 dark:text-{{ article.get_difficulty_color }}-200">
+                        {{ article.get_difficulty_display }}
+                    </span>
+                    
+                    <a href="{{ article.get_absolute_url }}" 
+                       class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
+                        Lire
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if articles.has_other_pages %}
+    <div class="flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {% if articles.has_previous %}
+            <a href="?{% if query %}q={{ query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_tag %}tag={{ selected_tag }}&{% endif %}{% if selected_difficulty %}difficulty={{ selected_difficulty }}&{% endif %}{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}&{% endif %}sort={{ sort_by }}&page={{ articles.previous_page_number }}" 
+               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                Précédent
+            </a>
+            {% endif %}
+            
+            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900 text-sm font-medium text-blue-600 dark:text-blue-400">
+                Page {{ articles.number }} sur {{ articles.paginator.num_pages }}
+            </span>
+            
+            {% if articles.has_next %}
+            <a href="?{% if query %}q={{ query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_tag %}tag={{ selected_tag }}&{% endif %}{% if selected_difficulty %}difficulty={{ selected_difficulty }}&{% endif %}{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}&{% endif %}sort={{ sort_by }}&page={{ articles.next_page_number }}" 
+               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                Suivant
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+    
+    {% elif query %}
+    <!-- No Results -->
+    <div class="text-center py-12">
+        <div class="text-gray-400 dark:text-gray-500 mb-4">
+            <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">Aucun résultat trouvé</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">
+            Essayez de modifier vos critères de recherche ou utilisez d'autres mots-clés.
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <div class="text-center mt-12">
+        <a href="{% url 'posts:home' %}" 
+           class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200">
+            ← Retour à l'accueil
+        </a>
+    </div>
+</div>
+{% endblock %}

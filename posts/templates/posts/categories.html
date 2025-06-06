@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "categories.title" %} - {% trans "categories.site_name" %}{% endblock %}
+
+{% block page_title %}{% trans "categories.title" %}{% endblock %}
+{% block page_subtitle %}{% trans "categories.subtitle" %}{% endblock %}
+
+{% block content %}
+    {% if categories_with_count %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in categories_with_count %}
+                <a href="{% url 'posts:category_detail' item.category.slug %}" class="group">
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        <!-- En-tête colorée avec couleur de la catégorie -->
+                        <div class="h-24 relative overflow-hidden" style="background: linear-gradient(135deg, {{ item.category.color }}20 0%, {{ item.category.color }}40 100%);">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: {{ item.category.color }}20; border: 2px solid {{ item.category.color }}40;">
+                                    <svg class="w-6 h-6" style="color: {{ item.category.color }};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contenu -->
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xl font-bold text-gray-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text transition-all duration-300" style="group-hover:--tw-gradient-from: {{ item.category.color }}; group-hover:--tw-gradient-to: {{ item.category.color }}80;">
+                                    {{ item.category.name }}
+                                </h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white" style="background-color: {{ item.category.color }};">
+                                    {{ item.article_count }}
+                                </span>
+                            </div>
+                            
+                            {% if item.category.description %}
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ item.category.description }}</p>
+                            {% endif %}
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">
+                                    {% blocktrans count count=item.article_count %}{{ count }} article{% plural %}{{ count }} articles{% endblocktrans %}
+                                </span>
+                                <div class="flex items-center text-sm font-medium group-hover:text-red-600 transition-colors" style="color: {{ item.category.color }};">
+                                    {% trans "categories.explore" %}
+                                    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- État vide -->
+        <div class="text-center py-12">
+            <div class="mx-auto w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">{% trans "categories.no_categories_yet" %}</h3>
+            <p class="text-gray-600 mb-6">{% trans "categories.categories_will_be_created" %}</p>
+            {% if user.is_superuser %}
+                <a href="/admin/posts/category/" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    {% trans "categories.create_category" %}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

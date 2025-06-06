@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py startapp:*)",
+      "Bash(source:*)",
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(pip install:*)",
+      "Bash(python manage.py tailwind:*)",
+      "Bash(wget:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(apt list:*)",
+      "Bash(chmod:*)",
+      "Bash(apt-get:*)",
+      "Bash(apt-get install:*)",
+      "Bash(service postgresql:*)",
+      "Bash(python manage.py:*)",
+      "Bash(PGPASSWORD:*)",
+      "Bash(rm:*)",
+      "Bash(find:*)",
+      "Bash(true)",
+      "Bash(tar:*)",
+      "Bash(pkill:*)",
+      "Bash(./ngrok http 8000)",
+      "Bash(python3 manage.py startapp:*)",
+      "Bash(ls:*)",
+      "Bash(python3 manage.py:*)",
+      "Bash(apt:*)",
+      "Bash(apt install:*)",
+      "Bash(cp:*)",
+      "Bash(python test:*)",
+      "Bash(grep:*)",
+      "Bash(python:*)",
+      "Bash(rg:*)",
+      "WebFetch(domain:127.0.0.1)",
+      "Bash(curl:*)",
+      "Bash(./start.sh:*)",
+      "Bash(timeout:*)"
+    ],
+    "deny": []
+  }
+}

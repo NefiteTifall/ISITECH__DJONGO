@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Test Simple - Ajouter Article{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-8">
+    <h1 class="text-2xl font-bold mb-6">Test Simple - Formulaire Article</h1>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Champs cachés -->
+        <input type="hidden" name="slug" value="test-article">
+        <input type="hidden" name="status" value="draft">
+        <input type="hidden" name="difficulty" value="beginner">
+        <input type="hidden" name="is_featured" value="False">
+        <input type="hidden" name="allow_comments" value="True">
+        <input type="hidden" name="meta_title" value="">
+        <input type="hidden" name="meta_description" value="">
+        
+        <!-- Titre -->
+        <div>
+            <label for="titre" class="block text-sm font-medium text-gray-700">Titre</label>
+            <input type="text" name="titre" id="titre" required 
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+        
+        <!-- Résumé -->
+        <div>
+            <label for="resume" class="block text-sm font-medium text-gray-700">Résumé</label>
+            <textarea name="resume" id="resume" rows="3" 
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+        </div>
+        
+        <!-- Contenu -->
+        <div>
+            <label for="contenu" class="block text-sm font-medium text-gray-700">Contenu</label>
+            <textarea name="contenu" id="contenu" rows="10" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+        </div>
+        
+        <!-- Tests de boutons -->
+        <div class="space-y-4">
+            <button type="button" onclick="testSimple()" 
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Test Simple
+            </button>
+            
+            <button type="button" onclick="fillForm()" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Remplir Formulaire
+            </button>
+            
+            <button type="submit" name="save_draft"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Sauvegarder Brouillon
+            </button>
+            
+            <button type="submit" name="publish"
+                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                Publier Article
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+console.log("🧪 Page de test simple chargée");
+
+function testSimple() {
+    console.log("🔘 Test simple appelé !");
+    alert("Bouton de test fonctionne !");
+}
+
+function fillForm() {
+    console.log("📝 Remplissage du formulaire");
+    document.getElementById('titre').value = "Article de Test Simple";
+    document.getElementById('resume').value = "Résumé de test pour vérifier que tout fonctionne correctement.";
+    document.getElementById('contenu').value = "# Article de Test\n\nCeci est un test simple pour vérifier que les boutons fonctionnent. Le contenu doit être suffisamment long pour passer la validation de 50 mots minimum. Voici du contenu supplémentaire pour atteindre ce seuil et s'assurer que la soumission du formulaire fonctionne correctement.";
+    alert("Formulaire rempli !");
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("✅ DOM chargé");
+    
+    // Test de tous les boutons
+    const buttons = document.querySelectorAll('button');
+    console.log(`📊 ${buttons.length} boutons trouvés`);
+    
+    buttons.forEach((btn, index) => {
+        console.log(`Bouton ${index + 1}:`, {
+            id: btn.id,
+            type: btn.type,
+            onclick: btn.onclick ? 'OUI' : 'NON',
+            text: btn.textContent.trim()
+        });
+        
+        btn.addEventListener('click', function(e) {
+            console.log(`🔘 Clic détecté sur bouton ${index + 1}: ${btn.textContent.trim()}`);
+        });
+    });
+    
+    // Test du formulaire
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log("📤 Soumission du formulaire détectée");
+        });
+    }
+});
+
+// Fonction de debug globale
+window.debugButtons = function() {
+    console.log("🔍 Debug des boutons");
+    const buttons = document.querySelectorAll('button');
+    
+    buttons.forEach((btn, index) => {
+        const rect = btn.getBoundingClientRect();
+        const style = window.getComputedStyle(btn);
+        
+        console.log(`Bouton ${index + 1}:`, {
+            visible: rect.width > 0 && rect.height > 0,
+            pointerEvents: style.pointerEvents,
+            zIndex: style.zIndex,
+            disabled: btn.disabled,
+            display: style.display,
+            position: style.position
+        });
+        
+        // Test de clic programmatique
+        try {
+            btn.click();
+            console.log(`✅ Clic programmatique réussi sur bouton ${index + 1}`);
+        } catch (error) {
+            console.error(`❌ Erreur clic sur bouton ${index + 1}:`, error);
+        }
+    });
+};
+</script>
+
+{% endblock %}

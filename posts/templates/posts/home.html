@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% load static %}
+{% load blog_extras %}
+{% load i18n %}
+
+{% block title %}{% trans "page.home.title" %}{% endblock %}
+
+{% block page_title %}{% trans "page.home.brand" %}{% endblock %}
+{% block page_subtitle %}{% trans "page.home.subtitle" %}{% endblock %}
+
+{% block content %}
+    <!-- Messages Django convertis en toasts -->
+    {% if messages %}
+        {% for message in messages %}
+            <div data-django-message data-message-type="{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}" style="display: none;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- Hero Section -->
+    <div class="relative bg-gradient-to-br from-red-500 via-[#da3e44] to-orange-500 rounded-3xl overflow-hidden mb-12 shadow-2xl hover-lift animate-gradient">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+        
+        <!-- Motif décoratif -->
+        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-60 h-60 bg-white opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="relative px-8 py-16 sm:px-12 sm:py-20">
+            <div class="max-w-4xl">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight">
+                    {% trans "hero.welcome" %}
+                </h1>
+                <p class="text-xl text-white/90 mb-8 max-w-2xl">
+                    {% trans "hero.description" %}
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'posts:ajouter_article' %}" class="inline-flex items-center px-8 py-4 bg-white text-purple-600 font-semibold rounded-2xl hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        {% trans "action.write_article" %}
+                    </a>
+                    {% endif %}
+                    <!-- Statistiques globales -->
+                    <div class="flex flex-wrap gap-4 text-white">
+                        <div class="flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-sm font-medium">{{ stats.total_articles }} {% trans "stats.articles" %}</span>
+                        </div>
+                        <div class="flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                            </svg>
+                            <span class="text-sm font-medium">{{ stats.total_auteurs }} {% trans "stats.authors" %}</span>
+                        </div>
+                        <div class="flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm font-medium">{{ stats.total_lecteurs }} {% trans "stats.views" %}</span>
+                        </div>
+                        <div class="flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm font-medium">{{ stats.total_commentaires }} {% trans "stats.comments" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Barre de recherche et filtres -->
+    <div class="mb-8">
+        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <form method="GET" class="flex flex-col md:flex-row gap-4">
+                <!-- Recherche -->
+                <div class="flex-1">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" 
+                               name="search" 
+                               value="{{ search_query }}"
+                               placeholder="{% trans 'search.placeholder' %}" 
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                    </div>
+                </div>
+                
+                <!-- Filtre par catégorie -->
+                <div class="md:w-48">
+                    <select name="category" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                        <option value="">{% trans "filter.all_categories" %}</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Boutons -->
+                <div class="flex gap-2">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white font-medium rounded-xl hover:from-red-600 hover:to-orange-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        {% trans "action.search" %}
+                    </button>
+                    {% if search_query or category_filter %}
+                    <a href="{% url 'posts:home' %}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        {% trans "action.clear" %}
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if articles %}
+        <!-- Section des articles -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                        {% if search_query %}
+                            {% blocktrans with query=search_query %}Résultats pour "{{ query }}"{% endblocktrans %}
+                        {% elif category_filter %}
+                            {% trans "title.articles_in_category" %}
+                        {% else %}
+                            {% trans "title.recent_articles" %}
+                        {% endif %}
+                    </h2>
+                    <p class="text-gray-600">
+                        {% if search_query or category_filter %}
+                            {% blocktrans count count=articles.count %}{{ count }} résultat trouvé{% plural %}{{ count }} résultats trouvés{% endblocktrans %}
+                        {% else %}
+                            {% trans "subtitle.discover_latest" %}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {% for article in articles %}
+                {% render_article_card_home article %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- État vide amélioré -->
+        <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-100 to-pink-100 opacity-30 blur-3xl animate-gradient"></div>
+            <div class="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-white/20 hover-lift">
+                <div class="px-8 py-16 sm:px-12 sm:py-20 text-center">
+                    <div class="mx-auto w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-8 floating-animation animate-gradient">
+                        <svg class="w-16 h-16 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-4">{% trans "empty.title" %}</h3>
+                    <p class="text-xl text-gray-600 mb-8 max-w-md mx-auto">
+                        {% trans "empty.description" %}
+                    </p>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'posts:ajouter_article' %}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 pulse-glow animate-gradient">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        {% trans "action.write_first_article" %}
+                    </a>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 pulse-glow animate-gradient">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 6a2 2 0 002 2h6a2 2 0 002-2v-1m-11 1a2 2 0 002 2h6a2 2 0 002-2M7 21h10a2 2 0 002-2V9a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        {% trans "action.login_to_write" %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<style>
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-slideDown {
+        animation: slideDown 0.5s ease-out;
+    }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .quick-reaction-success {
+        animation: reactionPulse 0.6s ease-out;
+    }
+    @keyframes reactionPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.5); }
+        100% { transform: scale(1); }
+    }
+    .quick-reaction-btn {
+        position: relative;
+        overflow: hidden;
+    }
+    .quick-reaction-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    .quick-reaction-btn:active::before {
+        width: 300px;
+        height: 300px;
+    }
+</style>
+
+<script>
+
+// Créer une notification moderne et élégante
+function createModernNotification(message, type = 'success') {
+    const colors = {
+        success: {
+            bg: 'from-emerald-50 to-green-50',
+            border: 'border-emerald-200',
+            text: 'text-emerald-800',
+            icon: 'text-emerald-600',
+            iconBg: 'bg-emerald-100',
+            accent: 'from-emerald-400 to-green-500'
+        },
+        error: {
+            bg: 'from-red-50 to-pink-50',
+            border: 'border-red-200',
+            text: 'text-red-800',
+            icon: 'text-red-600',
+            iconBg: 'bg-red-100',
+            accent: 'from-red-400 to-pink-500'
+        }
+    };
+    
+    const color = colors[type];
+    
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 z-50 transform translate-x-full opacity-0 transition-all duration-500 ease-out';
+    notification.innerHTML = `
+        <div class="bg-gradient-to-r ${color.bg} border ${color.border} rounded-2xl p-4 shadow-xl backdrop-blur-sm max-w-sm">
+            <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${color.accent}"></div>
+            <div class="flex items-start ml-3">
+                <div class="flex-shrink-0">
+                    <div class="p-1.5 ${color.iconBg} rounded-full">
+                        ${type === 'success' ? 
+                            `<svg class="h-4 w-4 ${color.icon}" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>` :
+                            `<svg class="h-4 w-4 ${color.icon}" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>`
+                        }
+                    </div>
+                </div>
+                <div class="ml-3 flex-1">
+                    <p class="text-sm font-semibold ${color.text}">${message}</p>
+                </div>
+                <button type="button" class="ml-3 inline-flex ${color.icon} hover:opacity-75 transition-opacity" onclick="dismissModernNotification(this)">
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animation d'entrée
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full', 'opacity-0');
+    }, 100);
+    
+    // Auto-suppression après 4 secondes
+    setTimeout(() => {
+        dismissModernNotification(notification.querySelector('button'));
+    }, 4000);
+    
+    return notification;
+}
+
+
+// Gestion du menu déroulant des réactions
+function toggleReactionMenu(articleId) {
+    try {
+        console.log('toggleReactionMenu appelé pour article ID:', articleId);
+        const menu = document.getElementById(`reactions-menu-${articleId}`);
+        const button = document.getElementById(`reactions-menu-btn-${articleId}`);
+        
+        console.log('Bouton trouvé:', button);
+        console.log('Menu trouvé:', menu);
+        
+        if (!menu || !button) {
+            console.error('Menu ou bouton introuvable pour article ID:', articleId);
+            return;
+        }
+        
+        const isVisible = !menu.classList.contains('opacity-0');
+        
+        // Fermer tous les autres menus
+        document.querySelectorAll('[id^="reactions-menu-"]').forEach(otherMenu => {
+            if (otherMenu.id !== `reactions-menu-${articleId}`) {
+                otherMenu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                const otherButtonId = otherMenu.id.replace('reactions-menu-', 'reactions-menu-btn-');
+                const otherButton = document.getElementById(otherButtonId);
+                if (otherButton) {
+                    const svg = otherButton.querySelector('svg');
+                    if (svg) svg.classList.remove('rotate-180');
+                }
+            }
+        });
+        
+        if (isVisible) {
+            // Fermer le menu
+            menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            const svg = button.querySelector('svg');
+            if (svg) svg.classList.remove('rotate-180');
+        } else {
+            // Ouvrir le menu
+            menu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+            const svg = button.querySelector('svg');
+            if (svg) svg.classList.add('rotate-180');
+        }
+    } catch (error) {
+        console.error('Erreur dans toggleReactionMenu:', error);
+    }
+}
+
+function closeReactionMenu(articleId) {
+    const menu = document.getElementById(`reactions-menu-${articleId}`);
+    const button = document.getElementById(`reactions-menu-btn-${articleId}`);
+    menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+    button.querySelector('svg').classList.remove('rotate-180');
+}
+
+// Fermer les menus en cliquant à l'extérieur
+document.addEventListener('click', function(event) {
+    // Vérifier si le clic est en dehors de tous les menus et boutons de réaction
+    const clickedOnMenu = event.target.closest('[id^="reactions-menu-"]');
+    const clickedOnButton = event.target.closest('[id^="reactions-menu-btn-"]');
+    
+    if (!clickedOnMenu && !clickedOnButton) {
+        // Fermer tous les menus ouverts
+        document.querySelectorAll('[id^="reactions-menu-"]').forEach(menu => {
+            menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        });
+        
+        // Remettre tous les SVG à l'état normal
+        document.querySelectorAll('[id^="reactions-menu-btn-"]').forEach(button => {
+            const svg = button.querySelector('svg');
+            if (svg) {
+                svg.classList.remove('rotate-180');
+            }
+        });
+    }
+});
+
+function quickReaction(articleId, reactionType, buttonElement, event) {
+    // Empêcher la propagation pour éviter de déclencher d'autres événements
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    // Vérifier si l'utilisateur est connecté
+    {% if not user.is_authenticated %}
+    toast.error('{% trans "message.login_required_react" %}');
+    setTimeout(() => {
+        window.location.href = '{% url "accounts:login" %}';
+    }, 1500);
+    return;
+    {% endif %}
+    // Désactiver temporairement tous les boutons de réaction de cet article
+    const articleCard = buttonElement.closest('article');
+    const reactionBtns = articleCard.querySelectorAll('.quick-reaction-btn');
+    reactionBtns.forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+    });
+    
+    // Récupérer le token CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    const csrftoken = getCookie('csrftoken');
+    
+    // Créer les données du formulaire
+    const formData = new FormData();
+    formData.append('reaction_type', reactionType);
+    
+    // Get the reaction URL from the button's data attribute
+    const reactionUrl = buttonElement.getAttribute('data-reaction-url');
+    
+    fetch(reactionUrl, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Animation de succès sur le bouton cliqué
+            const emojiSpan = buttonElement.querySelector('span');
+            emojiSpan.classList.add('quick-reaction-success');
+            setTimeout(() => {
+                emojiSpan.classList.remove('quick-reaction-success');
+            }, 600);
+            
+            // Messages selon l'action
+            let message = '';
+            switch(data.action) {
+                case 'added':
+                    message = '{% trans "reaction.added" %}';
+                    break;
+                case 'removed':
+                    message = '{% trans "reaction.removed" %}';
+                    break;
+                default:
+                    message = '{% trans "reaction.updated" %}';
+            }
+            toast.success(message);
+            
+            // Mettre à jour l'apparence du bouton sans recharger
+            if (data.action === 'added') {
+                buttonElement.classList.add('border-blue-300', 'bg-blue-100');
+                buttonElement.classList.remove('border-transparent');
+            } else if (data.action === 'removed') {
+                buttonElement.classList.remove('border-blue-300', 'bg-blue-100');
+                buttonElement.classList.add('border-transparent');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        // Afficher une notification d'erreur moderne
+        toast.error('{% trans "error.reaction_failed" %}');
+    })
+    .finally(() => {
+        // Réactiver les boutons
+        reactionBtns.forEach(btn => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        });
+    });
+}
+</script>
+{% endblock %}

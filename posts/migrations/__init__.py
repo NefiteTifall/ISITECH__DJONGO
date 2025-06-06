@@ -1,0 +1,1 @@
+# Migrations pour l'app posts

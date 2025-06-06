@@ -1,0 +1,2 @@
+- Utiliser source ../blog_env/bin/activate devant chaque comme python pour qu'elle fonctionne correctement
+- Utilises le script start.sh pour essayer de démarrer le projet

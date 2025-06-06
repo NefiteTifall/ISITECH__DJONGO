@@ -1,0 +1,1105 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if is_edit %}{% trans "articles.edit_title" %}{% else %}{% trans "articles.add_title" %}{% endif %} - {% trans "articles.site_name" %}{% endblock %}
+
+{% block extra_head %}
+<!-- EasyMDE CSS et JS -->
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+<!-- CSS override pour garantir la fonctionnalité des boutons -->
+<style>
+/* Forcer les boutons à rester cliquables même avec EasyMDE */
+button[type="submit"], button[type="button"] {
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+    position: relative !important;
+}
+
+/* S'assurer que EasyMDE n'interfère pas avec les boutons */
+.CodeMirror-fullscreen {
+    z-index: 9998 !important;
+}
+
+.editor-toolbar {
+    z-index: 9997 !important;
+}
+
+/* Améliorer la visibilité des boutons */
+form button {
+    background-color: var(--bg-color) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+</style>
+{% endblock %}
+
+{% block page_title %}{% if is_edit %}{% trans "articles.edit_article" %}{% else %}{% trans "articles.create_new_article" %}{% endif %}{% endblock %}
+{% block page_subtitle %}{% if is_edit %}{% trans "articles.update_your_content" %}{% else %}{% trans "articles.share_your_ideas" %}{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden hover-lift">
+            <!-- En-tête moderne -->
+            <div class="bg-gradient-to-br from-blue-50/80 to-indigo-100/80 p-8 border-b border-white/20 backdrop-blur-sm animate-gradient">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-white/90 rounded-xl shadow-sm backdrop-blur-sm pulse-glow">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">{% if is_edit %}{% trans "articles.edit_article" %}{% else %}{% trans "articles.write_article" %}{% endif %}</h2>
+                        <p class="text-gray-600 mt-1">{% if is_edit %}{% trans "articles.edit_form_subtitle" %}{% else %}{% trans "articles.create_form_subtitle" %}{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulaire -->
+            <div class="p-8">
+                <!-- Info auteur -->
+                <div class="mb-6 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 border border-blue-200/50 rounded-lg backdrop-blur-sm hover-lift transition-all duration-300">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-sm text-blue-800">
+                            {% blocktrans with username=request.user.username %}This article will be published under the name: <strong>{{ username }}</strong>{% endblocktrans %}
+                        </span>
+                    </div>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Messages d'erreur globaux -->
+                    {% if form.errors %}
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                            <p class="font-semibold">{% trans "articles.form_errors" %}:</p>
+                            <ul class="list-disc list-inside">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ field|capfirst }} : {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Messages Django convertis en toasts -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div data-django-message data-message-type="{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}" style="display: none;">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- Slug caché -->
+                    <input type="hidden" name="slug" value="{{ form.slug.value|default:'article-slug' }}">
+                    
+                    <!-- Statut caché (géré par les boutons) -->
+                    <input type="hidden" name="statut" id="statut-field" value="{{ form.statut.value|default:'brouillon' }}">
+                    
+                    <!-- Difficulty caché avec valeur par défaut -->
+                    <input type="hidden" name="difficulty" value="{{ form.difficulty.value|default:'debutant' }}">
+                    
+                    <!-- Autres champs cachés avec valeurs par défaut -->
+                    <input type="hidden" name="is_featured" value="{% if form.is_featured.value %}{{ form.is_featured.value }}{% else %}False{% endif %}">
+                    <input type="hidden" name="allow_comments" value="{% if form.allow_comments.value %}{{ form.allow_comments.value }}{% else %}True{% endif %}">
+                    <input type="hidden" name="meta_title" value="{{ form.meta_title.value|default:'' }}">
+                    <input type="hidden" name="meta_description" value="{{ form.meta_description.value|default:'' }}">
+                    
+                    <!-- Titre -->
+                    <div class="space-y-2">
+                        <label for="{{ form.titre.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                            {% trans "articles.article_title" %}
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <input type="text" 
+                                   name="{{ form.titre.name }}" 
+                                   id="{{ form.titre.id_for_label }}"
+                                   placeholder="{% trans 'articles.title_placeholder' %}"
+                                   class="pl-10 w-full rounded-lg border border-gray-300/50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-300 bg-white/90 backdrop-blur-sm focus:bg-white focus:shadow-lg hover:shadow-md"
+                                   value="{{ form.titre.value|default:'' }}">
+                        </div>
+                        {% if form.titre.errors %}
+                            <p class="text-sm text-red-600 flex items-center mt-1">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                {{ form.titre.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Section Génération IA -->
+                    <div class="space-y-4 p-6 bg-gradient-to-br from-purple-50/80 to-indigo-50/80 border border-purple-200/50 rounded-xl backdrop-blur-sm">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-purple-900">✨ Génération par IA</h3>
+                        </div>
+                        
+                        <!-- Prompt pour génération d'article -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-medium text-purple-800">Décrivez votre article en quelques mots :</label>
+                            <div class="flex space-x-2">
+                                <input type="text" 
+                                       id="ai-prompt" 
+                                       placeholder="Ex: Comment créer une API REST avec Django"
+                                       class="flex-1 rounded-lg border border-purple-300/50 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm">
+                                <button type="button" 
+                                        id="generate-article-btn"
+                                        class="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 6.292 4 4 0 010-6.292zM15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"></path>
+                                    </svg>
+                                    <span>Générer</span>
+                                </button>
+                            </div>
+                            <p class="text-xs text-purple-600">L'IA va générer un article complet avec titre, résumé et contenu structuré.</p>
+                            <div class="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                                <p class="text-xs text-amber-700">
+                                    <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <strong>Note sur les images :</strong> Les images sont créées sur mesure par DALL-E. Vérifiez toujours la pertinence avant publication.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Loading indicator -->
+                        <div id="ai-loading" class="hidden flex items-center space-x-2 text-purple-600">
+                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                            <span class="text-sm">Génération en cours...</span>
+                        </div>
+                    </div>
+
+                    <!-- Résumé -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="{{ form.resume.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                                {% trans "articles.article_summary" %}
+                            </label>
+                            <button type="button" 
+                                    id="generate-summary-btn"
+                                    class="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 114 0z"></path>
+                                </svg>
+                                <span>Gemini</span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute top-3 left-3 pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                            </div>
+                            <textarea name="{{ form.resume.name }}" 
+                                      id="{{ form.resume.id_for_label }}"
+                                      rows="3"
+                                      maxlength="300"
+                                      placeholder="{% trans 'articles.summary_placeholder' %}"
+                                      class="pl-10 w-full rounded-lg border border-gray-300/50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-300 resize-none bg-white/90 backdrop-blur-sm focus:bg-white focus:shadow-lg hover:shadow-md">{{ form.resume.value|default:'' }}</textarea>
+                            <!-- Loading indicator for summary -->
+                            <div id="summary-loading" class="hidden absolute top-3 right-3 flex items-center">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500">{% trans "articles.summary_help_text" %} <span class="text-emerald-600 font-medium">Cliquez sur "Gemini" pour générer automatiquement.</span></p>
+                        {% if form.resume.errors %}
+                            <p class="text-sm text-red-600 flex items-center mt-1">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                {{ form.resume.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contenu Markdown avec EasyMDE -->
+                    <div class="space-y-2">
+                        <label for="{{ form.contenu.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                            Contenu (Markdown)
+                        </label>
+                        <div class="relative">
+                            <textarea name="{{ form.contenu.name }}" 
+                                      id="markdown-editor"
+                                      rows="20"
+                                      placeholder="Écrivez votre article en Markdown..."
+                                      class="w-full rounded-lg border border-gray-300/50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-300 resize-none bg-white/90 backdrop-blur-sm focus:bg-white focus:shadow-lg hover:shadow-md">{{ form.contenu.value|default:'' }}</textarea>
+                        </div>
+                        <div class="text-xs text-gray-500 space-y-1">
+                            <p>Utilisez la syntaxe Markdown pour formater votre article. L'éditeur propose un aperçu en temps réel.</p>
+                            <div class="bg-gray-50 p-2 rounded text-xs">
+                                <strong># Titre</strong> • <strong>**Gras**</strong> • <strong>*Italique*</strong> • <strong>[Lien](url)</strong> • <strong>![Image](url)</strong> • <strong>```code```</strong>
+                            </div>
+                        </div>
+                        {% if form.contenu.errors %}
+                            <p class="text-sm text-red-600 flex items-center mt-1">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                {{ form.contenu.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Catégories -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            {% trans "articles.categories" %}
+                        </label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                            {% for choice in form.categories %}
+                                <div class="flex items-center">
+                                    {{ choice.tag }}
+                                    <label for="{{ choice.id_for_label }}" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                                        {{ choice.choice_label }}
+                                    </label>
+                                </div>
+                            {% empty %}
+                                <p class="text-sm text-gray-500 col-span-full">{% trans "articles.no_categories" %} <a href="/admin/" class="text-red-600 hover:text-red-700">{% trans "articles.create_one" %}</a>.</p>
+                            {% endfor %}
+                        </div>
+                        <p class="text-xs text-gray-500">{% trans "articles.categories_help_text" %}</p>
+                        {% if form.categories.errors %}
+                            <p class="text-sm text-red-600 flex items-center mt-1">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                {{ form.categories.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            {% trans "Tags" %}
+                        </label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-purple-50/50 rounded-lg border border-purple-200/50">
+                            {% for choice in form.tags %}
+                                <div class="flex items-center">
+                                    {{ choice.tag }}
+                                    <label for="{{ choice.id_for_label }}" class="ml-2 text-sm text-gray-700 cursor-pointer hover:text-purple-600">
+                                        #{{ choice.choice_label }}
+                                    </label>
+                                </div>
+                            {% empty %}
+                                <p class="text-sm text-gray-500 col-span-full">{% trans "Aucun tag disponible" %}.</p>
+                            {% endfor %}
+                        </div>
+                        <p class="text-xs text-gray-500">{% trans "Sélectionnez les tags pertinents pour votre article" %}</p>
+                        {% if form.tags.errors %}
+                            <p class="text-sm text-red-600 flex items-center mt-1">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                {{ form.tags.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Image -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="{{ form.image.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                                {% trans "articles.article_image" %} ({% trans "articles.optional" %})
+                            </label>
+                            <button type="button" 
+                                    id="generate-image-btn"
+                                    class="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white text-xs font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span>Générer IA</span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <!-- Zone de drop par défaut -->
+                            <div id="image-drop-zone" class="flex items-center justify-center w-full">
+                                <label for="{{ form.image.id_for_label }}" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300/50 border-dashed rounded-lg cursor-pointer bg-gradient-to-br from-gray-50/80 to-blue-50/80 hover:from-blue-50/80 hover:to-indigo-50/80 transition-all duration-300 backdrop-blur-sm hover:shadow-md">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500">
+                                            <span class="font-semibold">{% trans "articles.click_to_upload" %}</span> {% trans "articles.or_drag_drop" %}
+                                        </p>
+                                        <p class="text-xs text-gray-500">{% trans "articles.image_formats" %}</p>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <!-- Zone de preview (cachée par défaut) -->
+                            <div id="image-preview-zone" class="hidden w-full">
+                                <div class="relative bg-gray-100 rounded-lg overflow-hidden">
+                                    <img id="image-preview" src="" alt="Preview" class="w-full h-48 object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                        <div class="flex space-x-2">
+                                            <button type="button" onclick="changeImage()" class="px-4 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                                                {% trans "articles.change" %}
+                                            </button>
+                                            <button type="button" onclick="removeImage()" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors">
+                                                {% trans "articles.delete" %}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 p-3 bg-gradient-to-r from-green-50/80 to-emerald-50/80 border border-green-200/50 rounded-lg backdrop-blur-sm">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="text-sm text-green-800 font-medium" id="image-name">{% trans "articles.image_selected" %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <input type="file" 
+                                   name="{{ form.image.name }}" 
+                                   id="{{ form.image.id_for_label }}"
+                                   accept="image/*"
+                                   onchange="handleImageUpload(this)"
+                                   class="hidden">
+                        </div>
+                        <p class="text-xs text-gray-500">{% trans "articles.image_help_text" %}</p>
+                        {% if form.image.errors %}
+                            <p class="text-sm text-red-600 flex items-center mt-1">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                {{ form.image.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+                        <a href="{% url 'posts:home' %}" class="inline-flex items-center px-6 py-3 text-gray-700 bg-white hover:bg-gray-50 font-medium rounded-lg border border-gray-300 transition-colors duration-200">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            {% trans "articles.cancel" %}
+                        </a>
+                        <div class="space-x-3">
+                            <button type="submit" name="save_draft" class="inline-flex items-center px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg transition-colors duration-200">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                </svg>
+                                {% trans "articles.save_as_draft" %}
+                            </button>
+                            <button type="submit" name="publish" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                                {% if is_edit and article.status == 'published' %}{% trans "articles.update_article" %}{% else %}{% trans "articles.publish_article" %}{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Conseils de rédaction -->
+        <div class="mt-8 bg-white rounded-xl p-6 border border-blue-100/50 backdrop-blur-sm hover-lift transition-all duration-300">
+            <h3 class="text-lg font-semibold text-blue-900 mb-3">💡 {% trans "articles.tips_title" %}</h3>
+            <ul class="space-y-2 text-sm text-blue-700">
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    {% trans "articles.tip_catchy_title" %}
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    {% trans "articles.tip_structure_content" %}
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    {% trans "articles.tip_proofread" %}
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-amber-700"><strong>Images IA :</strong> DALL-E crée des images sur mesure spécialement conçues pour votre article. Vérifiez toujours leur pertinence avant publication.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Fonctions de génération IA
+function showToast(message, type = 'info') {
+    // Créer un toast moderne
+    const toast = document.createElement('div');
+    toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
+    
+    const bgColors = {
+        'success': 'bg-green-500',
+        'error': 'bg-red-500',
+        'info': 'bg-blue-500',
+        'warning': 'bg-yellow-500'
+    };
+    
+    toast.className += ` ${bgColors[type] || bgColors.info} text-white`;
+    toast.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animation d'entrée
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto-suppression après 5 secondes
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+async function generateArticle() {
+    const prompt = document.getElementById('ai-prompt').value.trim();
+    if (!prompt) {
+        showToast('Veuillez saisir une description pour votre article', 'warning');
+        return;
+    }
+    
+    const loadingEl = document.getElementById('ai-loading');
+    const generateBtn = document.getElementById('generate-article-btn');
+    
+    // Afficher le loading
+    loadingEl.classList.remove('hidden');
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = `
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+        <span>Génération...</span>
+    `;
+    
+    try {
+        const response = await fetch('/ai/generate-article/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                prompt: prompt,
+                generator: 'gemini'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Remplir les champs du formulaire
+            document.getElementById('{{ form.titre.id_for_label }}').value = data.data.titre || '';
+            document.getElementById('{{ form.resume.id_for_label }}').value = data.data.resume || '';
+            
+            // Mettre à jour l'éditeur EasyMDE avec le contenu généré
+            if (easyMDE && data.data.contenu) {
+                easyMDE.value(data.data.contenu);
+                // Forcer le refresh de l'éditeur pour s'assurer que le contenu s'affiche
+                setTimeout(() => {
+                    easyMDE.codemirror.refresh();
+                }, 100);
+            } else {
+                // Fallback si EasyMDE n'est pas encore initialisé
+                document.getElementById('{{ form.contenu.id_for_label }}').value = data.data.contenu || '';
+                // Essayer d'initialiser EasyMDE si ce n'est pas déjà fait
+                if (!easyMDE) {
+                    initializeMarkdownEditor();
+                    setTimeout(() => {
+                        if (easyMDE) {
+                            easyMDE.value(data.data.contenu);
+                        }
+                    }, 500);
+                }
+            }
+            
+            showToast('Article généré avec succès ! 🎉', 'success');
+            
+            // Scroll vers le titre pour que l'utilisateur voit le résultat
+            document.getElementById('{{ form.titre.id_for_label }}').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        } else {
+            showToast(`Erreur: ${data.error}`, 'error');
+        }
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        showToast('Erreur de connexion. Veuillez réessayer.', 'error');
+    } finally {
+        // Masquer le loading
+        loadingEl.classList.add('hidden');
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <span>Générer</span>
+        `;
+    }
+}
+
+async function generateSummary() {
+    const title = document.getElementById('{{ form.titre.id_for_label }}').value.trim();
+    
+    // Récupérer le contenu depuis EasyMDE ou le textarea
+    let content = '';
+    if (easyMDE) {
+        content = easyMDE.value().trim();
+    } else {
+        content = document.getElementById('{{ form.contenu.id_for_label }}').value.trim();
+    }
+    
+    if (!title) {
+        showToast('Veuillez d\'abord saisir un titre', 'warning');
+        return;
+    }
+    
+    const loadingEl = document.getElementById('summary-loading');
+    const generateBtn = document.getElementById('generate-summary-btn');
+    
+    // Afficher le loading
+    loadingEl.classList.remove('hidden');
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = `
+        <div class="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+        <span>...</span>
+    `;
+    
+    try {
+        const response = await fetch('/ai/generate-summary/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                generator: 'gemini'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('{{ form.resume.id_for_label }}').value = data.summary;
+            showToast('Résumé généré avec succès ! ✨', 'success');
+        } else {
+            showToast(`Erreur: ${data.error}`, 'error');
+        }
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        showToast('Erreur de connexion. Veuillez réessayer.', 'error');
+    } finally {
+        // Masquer le loading
+        loadingEl.classList.add('hidden');
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <span>Gemini</span>
+        `;
+    }
+}
+
+async function generateImage() {
+    const title = document.getElementById('{{ form.titre.id_for_label }}').value.trim();
+    const prompt = document.getElementById('ai-prompt').value.trim();
+    
+    const imagePrompt = title || prompt;
+    if (!imagePrompt) {
+        showToast('Veuillez d\'abord saisir un titre ou une description', 'warning');
+        return;
+    }
+    
+    const generateBtn = document.getElementById('generate-image-btn');
+    
+    // Afficher le loading
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = `
+        <div class="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+        <span>...</span>
+    `;
+    
+    try {
+        const response = await fetch('/ai/generate-image/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                prompt: imagePrompt,
+                generator: 'openai'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.type === 'generated_image' && data.image_data) {
+                // Traiter l'image générée et sauvegardée
+                try {
+                    // Convertir base64 en blob pour l'affichage
+                    const base64Data = data.image_data;
+                    const byteCharacters = atob(base64Data);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const imageBlob = new Blob([byteArray], { type: 'image/png' });
+                    
+                    // Créer un fichier virtuel avec le nom généré
+                    const fileInput = document.getElementById('{{ form.image.id_for_label }}');
+                    const dataTransfer = new DataTransfer();
+                    const fileName = data.filename || `dalle-generated-${Date.now()}.png`;
+                    const file = new File([imageBlob], fileName, { type: 'image/png' });
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+                    
+                    // Afficher la preview avec l'image générée
+                    const imageUrl = `data:image/png;base64,${base64Data}`;
+                    document.getElementById('image-preview').src = imageUrl;
+                    document.getElementById('image-name').textContent = fileName;
+                    document.getElementById('image-drop-zone').classList.add('hidden');
+                    document.getElementById('image-preview-zone').classList.remove('hidden');
+                    
+                    // Remplir le champ alt avec la description générée
+                    const altField = document.querySelector('input[name="{{ form.image_alt.name }}"]');
+                    if (altField) {
+                        altField.value = data.alt_text || '';
+                    }
+                    
+                    // Afficher un message de succès avec des détails
+                    showToast('🎨 Image générée par DALL-E et ajoutée !', 'success');
+                    
+                    // Afficher un disclaimer après 2 secondes
+                    setTimeout(() => {
+                        showToast('✨ Image créée spécialement pour votre article !', 'info');
+                    }, 3000);
+                    
+                } catch (error) {
+                    console.error('Erreur lors du traitement de l\'image:', error);
+                    showToast('Erreur lors du traitement de l\'image générée', 'error');
+                }
+            }
+        } else {
+            showToast(`Erreur DALL-E: ${data.error}`, 'error');
+        }
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        showToast('Erreur de connexion. Veuillez réessayer.', 'error');
+    } finally {
+        // Restaurer le bouton
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span>Générer IA</span>
+        `;
+    }
+}
+
+// Initialisation d'EasyMDE pour l'éditeur Markdown
+let easyMDE;
+
+function initializeMarkdownEditor() {
+    const textarea = document.getElementById('markdown-editor');
+    if (textarea && !easyMDE) {
+        try {
+            easyMDE = new EasyMDE({
+                element: textarea,
+                spellChecker: false,
+                autofocus: false,
+                placeholder: "Écrivez votre article en Markdown...\n\nUtilisez la syntaxe Markdown :\n# Titre\n## Sous-titre\n**Gras** *Italique*\n- Liste\n```code```",
+                status: ['lines', 'words', 'cursor', 'autosave'],
+                toolbar: [
+                    'bold', 'italic', 'heading', '|',
+                    'quote', 'unordered-list', 'ordered-list', '|',
+                    'link', 'image', 'table', '|',
+                    'code', 'preview', 'side-by-side', 'fullscreen', '|',
+                    'guide'
+                ],
+                previewRender: function(plainText) {
+                    // Prévisualisation avec notre filtre Markdown simplifié
+                    return markdownToHtml(plainText);
+                },
+                renderingConfig: {
+                    singleLineBreaks: false,
+                    codeSyntaxHighlighting: true,
+                },
+                insertTexts: {
+                    horizontalRule: ["", "\n\n-----\n\n"],
+                    image: ["![](", ")"],
+                    link: ["[", "](https://)"],
+                    table: ["", "\n\n| Colonne 1 | Colonne 2 | Colonne 3 |\n| -------- | -------- | -------- |\n| Texte     | Texte     | Texte     |\n\n"],
+                },
+                sideBySideFullscreen: false,
+                shortcuts: {
+                    toggleBold: "Cmd-B",
+                    toggleItalic: "Cmd-I",
+                    togglePreview: "Cmd-P",
+                    toggleSideBySide: "F9",
+                    toggleFullScreen: "F11"
+                }
+            });
+            
+            // Événement pour détecter les changements dans l'éditeur
+            easyMDE.codemirror.on("change", function() {
+                // Optionnel : sauvegarde automatique ou autre logique
+                console.log("Contenu modifié dans l'éditeur");
+            });
+            
+            console.log("✅ EasyMDE initialisé avec succès");
+        } catch (error) {
+            console.error("❌ Erreur lors de l'initialisation d'EasyMDE:", error);
+            showToast("Erreur lors de l'initialisation de l'éditeur Markdown", "error");
+        }
+    }
+}
+
+// Fonction simple pour convertir Markdown en HTML (pour la preview)
+function markdownToHtml(text) {
+    // Remplacements simples pour la preview
+    return text
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+        .replace(/!\[([^\]]*)\]\(([^\)]*)\)/gim, '<img alt="$1" src="$2" />')
+        .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
+        .replace(/`([^`]*)`/gim, '<code>$1</code>')
+        .replace(/\n/gim, '<br>');
+}
+
+// Fonction pour initialiser tous les boutons de manière sécurisée
+function initializeButtons() {
+    console.log("🔘 Initialisation des boutons...");
+    
+    try {
+        // Génération d'article complet
+        const generateArticleBtn = document.getElementById('generate-article-btn');
+        if (generateArticleBtn) {
+            generateArticleBtn.addEventListener('click', generateArticle);
+            console.log("✅ Bouton génération article initialisé");
+        }
+        
+        // Génération de résumé
+        const generateSummaryBtn = document.getElementById('generate-summary-btn');
+        if (generateSummaryBtn) {
+            generateSummaryBtn.addEventListener('click', generateSummary);
+            console.log("✅ Bouton génération résumé initialisé");
+        }
+        
+        // Génération d'image avec DALL-E
+        const generateImageBtn = document.getElementById('generate-image-btn');
+        if (generateImageBtn) {
+            generateImageBtn.addEventListener('click', generateImage);
+            console.log("✅ Bouton génération image initialisé");
+        }
+        
+        // Permettre la génération avec Entrée sur le prompt
+        const promptInput = document.getElementById('ai-prompt');
+        if (promptInput) {
+            promptInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateArticle();
+                }
+            });
+            console.log("✅ Input prompt initialisé");
+        }
+        
+        // Boutons de formulaire
+        const submitButtons = document.querySelectorAll('button[type="submit"]');
+        submitButtons.forEach((btn, index) => {
+            console.log(`✅ Bouton submit ${index + 1} détecté`);
+        });
+        
+        // Test de cliquabilité des boutons
+        setTimeout(() => {
+            submitButtons.forEach((btn, index) => {
+                const rect = btn.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                const isClickable = btn.style.pointerEvents !== 'none';
+                console.log(`🔍 Bouton ${index + 1}: visible=${isVisible}, cliquable=${isClickable}`);
+                
+                if (!isVisible || !isClickable) {
+                    console.warn(`⚠️ Problème détecté avec le bouton ${index + 1}`);
+                }
+            });
+        }, 1000);
+        
+        console.log("🎉 Tous les boutons initialisés avec succès");
+        
+    } catch (error) {
+        console.error("❌ Erreur lors de l'initialisation des boutons:", error);
+    }
+}
+
+// Gestion des boutons de soumission avec statut
+function setupFormSubmission() {
+    // Bouton "Sauvegarder comme brouillon"
+    const draftButton = document.querySelector('button[name="save_draft"]');
+    if (draftButton) {
+        draftButton.addEventListener('click', function(e) {
+            console.log('📝 Sauvegarde comme brouillon');
+            document.getElementById('statut-field').value = 'brouillon';
+        });
+    }
+    
+    // Bouton "Publier"
+    const publishButton = document.querySelector('button[name="publish"]');
+    if (publishButton) {
+        publishButton.addEventListener('click', function(e) {
+            console.log('🚀 Publication de l\'article');
+            document.getElementById('statut-field').value = 'publié';
+        });
+    }
+    
+    console.log('✅ Gestion des boutons de formulaire configurée');
+}
+
+// Event listeners - Nouvelle approche avec priorité aux boutons
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("🚀 Page chargée, initialisation...");
+    
+    // ÉTAPE 1: Initialiser les boutons immédiatement (priorité absolue)
+    initializeButtons();
+    
+    // ÉTAPE 1bis: Configurer la gestion des boutons de soumission
+    setupFormSubmission();
+    
+    // ÉTAPE 2: Vérifier que les boutons sont bien fonctionnels avant EasyMDE
+    setTimeout(() => {
+        console.log("🔍 Vérification des boutons avant EasyMDE...");
+        const submitButtons = document.querySelectorAll('button[type="submit"]');
+        let buttonsOk = true;
+        
+        submitButtons.forEach((btn, index) => {
+            const rect = btn.getBoundingClientRect();
+            const isVisible = rect.width > 0 && rect.height > 0;
+            const isClickable = btn.style.pointerEvents !== 'none' && !btn.disabled;
+            
+            if (!isVisible || !isClickable) {
+                console.warn(`⚠️ Bouton ${index + 1} non fonctionnel`);
+                buttonsOk = false;
+            }
+        });
+        
+        if (buttonsOk) {
+            console.log("✅ Boutons OK, initialisation d'EasyMDE...");
+            
+            // ÉTAPE 3: Initialiser EasyMDE seulement si les boutons fonctionnent
+            if (typeof EasyMDE !== 'undefined') {
+                try {
+                    initializeMarkdownEditor();
+                    console.log("✅ EasyMDE initialisé avec succès");
+                    
+                    // ÉTAPE 4: Re-vérifier les boutons après EasyMDE
+                    setTimeout(() => {
+                        console.log("🔍 Vérification finale des boutons...");
+                        submitButtons.forEach((btn, index) => {
+                            const rect = btn.getBoundingClientRect();
+                            const isVisible = rect.width > 0 && rect.height > 0;
+                            const isClickable = btn.style.pointerEvents !== 'none' && !btn.disabled;
+                            
+                            if (!isVisible || !isClickable) {
+                                console.warn(`⚠️ EasyMDE a cassé le bouton ${index + 1}, réparation...`);
+                                btn.style.pointerEvents = 'auto';
+                                btn.style.zIndex = '9999';
+                                btn.style.position = 'relative';
+                                btn.disabled = false;
+                                console.log(`✅ Bouton ${index + 1} réparé`);
+                            }
+                        });
+                    }, 200);
+                    
+                } catch (error) {
+                    console.error("❌ Erreur EasyMDE:", error);
+                    console.log("📝 Utilisation du textarea standard");
+                }
+            } else {
+                console.warn("⚠️ EasyMDE non disponible, utilisation du textarea standard");
+            }
+        } else {
+            console.error("❌ Boutons défaillants, abandon d'EasyMDE");
+        }
+    }, 100);
+    
+    console.log("🔄 Initialisation terminée");
+});
+
+// Fonction de débogage pour tester les boutons manuellement
+window.testButtons = function() {
+    console.log("🧪 Test manuel des boutons...");
+    
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((btn, index) => {
+        const rect = btn.getBoundingClientRect();
+        const computed = window.getComputedStyle(btn);
+        
+        console.log(`Bouton ${index + 1}:`, {
+            id: btn.id,
+            class: btn.className,
+            type: btn.type,
+            visible: rect.width > 0 && rect.height > 0,
+            pointerEvents: computed.pointerEvents,
+            zIndex: computed.zIndex,
+            position: computed.position,
+            display: computed.display,
+            disabled: btn.disabled
+        });
+    });
+};
+
+// Fonction pour forcer la réactivation des boutons
+window.fixButtons = function() {
+    console.log("🔧 Réparation des boutons...");
+    
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((btn, index) => {
+        btn.style.pointerEvents = 'auto';
+        btn.disabled = false;
+        btn.style.zIndex = '1';
+        console.log(`✅ Bouton ${index + 1} réparé`);
+    });
+    
+    console.log("🎉 Tous les boutons réparés !");
+};
+
+function handleImageUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        // Vérifier le type de fichier
+        if (!file.type.startsWith('image/')) {
+            alert('Veuillez sélectionner un fichier image valide.');
+            input.value = '';
+            return;
+        }
+        
+        // Vérifier la taille (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('L\'image est trop volumineuse. Taille maximum : 5MB.');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Afficher la preview
+            document.getElementById('image-preview').src = e.target.result;
+            document.getElementById('image-name').textContent = file.name;
+            
+            // Masquer la zone de drop et afficher la preview
+            document.getElementById('image-drop-zone').classList.add('hidden');
+            document.getElementById('image-preview-zone').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function changeImage() {
+    // Déclencher le clic sur l'input file
+    document.getElementById('{{ form.image.id_for_label }}').click();
+}
+
+function removeImage() {
+    // Réinitialiser l'input file
+    const input = document.getElementById('{{ form.image.id_for_label }}');
+    input.value = '';
+    
+    // Masquer la preview et afficher la zone de drop
+    document.getElementById('image-preview-zone').classList.add('hidden');
+    document.getElementById('image-drop-zone').classList.remove('hidden');
+    
+    // Nettoyer la preview
+    document.getElementById('image-preview').src = '';
+    document.getElementById('image-name').textContent = '';
+}
+
+// Support du drag & drop
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('image-drop-zone');
+    const fileInput = document.getElementById('{{ form.image.id_for_label }}');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight(e) {
+        dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    }
+    
+    function unhighlight(e) {
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    }
+    
+    dropZone.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleImageUpload(fileInput);
+        }
+    }
+});
+</script>
+{% endblock %}

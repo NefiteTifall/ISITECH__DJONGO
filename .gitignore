@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Static files
+/staticfiles/
+
+# Virtual environments
+venv/
+env/
+ENV/
+blog_env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Environment variables
+.env
+.env.local
+
+# PostgreSQL
+*.sql
+*.dump
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Django migrations
+*/migrations/*.py
+!*/migrations/__init__.py

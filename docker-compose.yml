@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: blogflow_postgres
+    environment:
+      POSTGRES_DB: blogflow_db
+      POSTGRES_USER: blogflow_user
+      POSTGRES_PASSWORD: blogflow_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blogflow_user -d blogflow_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Application Django
+  web:
+    build: .
+    container_name: blogflow_web
+    command: >
+      sh -c "python manage.py migrate &&
+             python create_sample_data.py &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://blogflow_user:blogflow_password@postgres:5432/blogflow_db
+      - SECRET_KEY=django-insecure-docker-development-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
