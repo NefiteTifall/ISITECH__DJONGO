@@ -1,5 +1,7 @@
 # 📚 BlogFlow - Projet Django pour Évaluation
 
+> **Note :** Mon push initial n'avait pas fonctionné mais je ne m'en étais pas rendu compte, d'où le push tardif aujourd'hui. Le travail a bien été réalisé à la date prévue.
+
 > **Étudiant :** Nicolas GUILLAUME  
 > **Formation :** Master 2 - Développement Web  
 > **Matière :** Django Framework  
